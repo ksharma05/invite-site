@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 48 48">
+    <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+       stroke-width="1.6">
+      <!-- pot body -->
+      <path d="M14 26 C 14 40 34 40 34 26 Z" stroke-width="1.6"/>
+      <path d="M18 20 L 30 20 L 34 26 L 14 26 Z" stroke-width="1.5"/>
+      <path d="M16 45 L 32 45" stroke-width="0.8" opacity="0.6"/>
+      <!-- coconut on top -->
+      <circle cx="24" cy="18" r="4" stroke-width="1.4"/>
+      <path d="M24 14 C 24 10 24 8 26 25" stroke-width="0.7" opacity="0.6"/>
+      <!-- five mango leaves fanning up -->
+      <path d="M20 15 C 14 8 17 3 23 4 C 22 9 21 13 20 15 Z" stroke-width="1"
+            opacity="0.85"/>
+      <path d="M27 14 C 33 7 30 2 24 3 C 25 8 26 11 27 14 Z" stroke-width="1"
+            opacity="0.85"/>
+      <path d="M24 8 L 24 10" stroke-width="1" opacity="0.8"/>
+    </g>
+  </svg>

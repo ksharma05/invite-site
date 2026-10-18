@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5d77f"/>
+      <stop offset="50%" stop-color="#c9a227"/>
+      <stop offset="100%" stop-color="#8a6a1d"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="7" fill="#241510"/>
+  <!-- Golden auspicious kalash icon -->
+  <path d="M10 18 C10 26 22 26 22 18 Z" fill="url(#g)" stroke="#f5d77f" stroke-width="0.8"/>
+  <path d="M12 14 L20 14 L22 18 L10 18 Z" fill="url(#g)"/>
+  <circle cx="16" cy="12" r="2.5" fill="#f5d77f"/>
+  <path d="M16 9 L16 7" stroke="#f5d77f" stroke-width="1.2" stroke-linecap="round"/>
+</svg>

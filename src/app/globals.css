@@ -1,0 +1,255 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  "terracotta" is the confirmed theme (see DECISIONS.md). It is the default
+  (`:root`) and is set explicitly via `data-theme="terracotta"` on <html> in
+  the root layout. "jewel" and "marigold" are the earlier candidates, kept
+  only for reference/rollback — they are not reachable from the app UI.
+*/
+
+:root,
+[data-theme="terracotta"] {
+  --color-surface: #fbf4ec;
+  --color-surface-alt: #ecd9c4;
+  --color-ink: #3b2a21;
+  --color-ink-muted: #6e5848;
+  --color-primary: #b2602f;
+  --color-primary-dark: #8a4621;
+  --color-accent: #7a8b5f;
+  --color-border: #d9b68c;
+  /* Phase B — Indian-wedding accent (gold/brass). Use gold* for ornaments,
+     hairlines, fills and large numerals only; gold-toned TEXT uses gold-deep
+     (≈4.6:1 on cream) so body contrast stays ≥ 4.5:1. */
+  --color-gold: #c9a227;
+  --color-gold-bright: #d4af37;
+  --color-gold-deep: #8a6a1d;
+  --color-gold-line: rgb(201 162 39 / 0.32);
+  --color-card-tint: #f7ead9;
+  --color-rule: #e6cfae;
+  --radius-ornate: 1rem;
+  --shadow-soft: 0 12px 32px -16px rgb(178 96 47 / 0.35);
+  --shadow-ornate: 0 18px 44px -18px rgb(178 96 47 / 0.38), 0 0 0 1px rgb(201 162 39 / 0.22);
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-theme="marigold"] {
+  --color-surface: #fff8ef;
+  --color-surface-alt: #ffe9c7;
+  --color-ink: #3a1f1a;
+  --color-ink-muted: #6b4a3a;
+  --color-primary: #e2561f;
+  --color-primary-dark: #b8390f;
+  --color-accent: #c2185b;
+  --color-border: #f0c47e;
+  --radius-ornate: 1.25rem;
+  --shadow-soft: 0 12px 32px -16px rgb(226 86 31 / 0.35);
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+[data-theme="jewel"] {
+  --color-surface: #fdf6ea;
+  --color-surface-alt: #f1e2bd;
+  --color-ink: #241536;
+  --color-ink-muted: #4f3a66;
+  --color-primary: #6b1e3f;
+  --color-primary-dark: #4a1129;
+  --color-accent: #1f6b5c;
+  --color-border: #c9a24b;
+  --radius-ornate: 1.25rem;
+  --shadow-soft: 0 12px 32px -16px rgb(107 30 63 / 0.4);
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body {
+  background-color: var(--color-surface);
+  background-image: radial-gradient(
+    ellipse 80% 60% at 50% -10%,
+    rgb(178 96 47 / 0.08),
+    transparent 60%
+  );
+  color: var(--color-ink);
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background-color: var(--color-primary);
+  color: var(--color-surface);
+}
+
+/*
+  Phase 7 — reveal-on-scroll (one-shot, dependency-free).
+
+  Default state is fully visible so content is never gated on JavaScript or an
+  IntersectionObserver. A "pending" start state is applied only when the Reveal
+  component confirms the observer is available AND the visitor has not requested
+  reduced motion; under `prefers-reduced-motion: reduce` everything stays fully
+  visible with no animation.
+*/
+.reveal {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal--animate:not(.reveal--seen) {
+    opacity: 0;
+    transform: translateY(18px);
+    transition:
+      opacity 0.55s var(--motion-ease),
+      transform 0.55s var(--motion-ease);
+  }
+  .reveal--animate.reveal--seen {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 0.55s var(--motion-ease),
+      transform 0.55s var(--motion-ease);
+  }
+}
+
+/*
+  Stop-motion hero — the paper stage and the assembled props.
+
+  Everything here is decoration around content that is already fully rendered by
+  the server: the assembled hero IS the SSR output, so reduced-motion visitors,
+  JS-less visitors and the final frame of the shot are the same markup. Only
+  `transform` / `opacity` move; nothing loops (the timeline kills itself on
+  completion), and no timing lives in CSS — beat states are set by JS at the
+  exposure boundary, exactly like changing a physical puppet between frames.
+*/
+
+.sm-stage {
+  position: relative;
+  isolation: isolate;
+  /* Slightly wider than the text column so the sheet reads as a real surface
+     the invitation was photographed on, not as a card behind it. */
+  width: calc(100% + 2rem);
+  margin-inline: -1rem;
+  padding: 2.25rem 1rem 2.5rem;
+  border-radius: var(--radius-ornate);
+  /* Fallback colour = the measured paper mean of the stage textures. */
+  background-color: #e6d5be;
+  /* One-frame photographic grain: every exposure of a real stop-motion has it.
+     Pure feTurbulence, no asset, ~0.4 KB. */
+  --sm-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.5),
+    0 10px 30px -22px rgb(59 42 33 / 0.55);
+  overflow: hidden;
+}
+
+.sm-stage__plate {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+}
+
+.sm-stage__plate img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  /* The plate is a photograph of paper; a hair of warmth ties it to the page. */
+  filter: saturate(1.04) brightness(1.01);
+}
+
+/* Even top-down key light + faint corner fall, as a real overhead shot has. */
+.sm-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(120% 90% at 50% 8%, rgb(255 248 236 / 0.34), transparent 62%),
+    radial-gradient(115% 100% at 50% 100%, rgb(122 74 34 / 0.1), transparent 58%);
+}
+
+/* One-frame grain: the whole stage is a photographed surface. */
+.sm-stage::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0.55;
+  mix-blend-mode: multiply;
+  background-image: var(--sm-grain);
+  background-size: 180px 180px;
+}
+
+.sm-stage__content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* Props sit on the paper, so their cast shadows come from the wrapper, not from
+   300+ individual filter applications. */
+.sm-prop {
+  filter: drop-shadow(0 1.2px 0.6px rgb(59 42 33 / 0.22));
+}
+
+/* Each cut-out pivots on its own body (a petal hinges, a dot simply lands). */
+.sm-piece {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+.sm-prop,
+.sm-rosette {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+/* Only promoted while the shot is running; cleared again by JS on completion. */
+.sm-piece,
+.sm-prop {
+  will-change: transform, opacity;
+}
+
+/* Exposure brightness of the whole stage (film stock), stepped per beat. */
+.sm-exposure {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  background: #fff8ec;
+  opacity: 0;
+  mix-blend-mode: soft-light;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* No grain shimmer, no per-piece shadow work: the hero is simply presented. */
+  .sm-stage::after {
+    display: none;
+  }
+  .sm-piece,
+  .sm-prop {
+    will-change: auto;
+    filter: none;
+  }
+}

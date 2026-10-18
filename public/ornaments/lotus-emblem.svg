@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 48 24"><defs>
+  <linearGradient id="goldFoil" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="#e9c766"/>
+    <stop offset="35%" stop-color="#c9a227"/>
+    <stop offset="68%" stop-color="#8a6a1d"/>
+    <stop offset="100%" stop-color="#d4af37"/>
+  </linearGradient>
+  <linearGradient id="goldFoilWarm" x1="0%" y1="100%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#d4af37"/>
+    <stop offset="45%" stop-color="#c9a227"/>
+    <stop offset="72%" stop-color="#e9c766"/>
+    <stop offset="100%" stop-color="#8a6a1d"/>
+  </linearGradient>
+  <linearGradient id="goldSheen" x1="0%" y1="0%" x2="0%" y2="100%">
+    <stop offset="0%" stop-color="#fff3c4"/>
+    <stop offset="55%" stop-color="#e9c766"/>
+    <stop offset="100%" stop-color="#b8922a"/>
+  </linearGradient></defs>
+    <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <!-- side petals -->
+      <path d="M24 22 C 24 12, 12 10, 6 18 C 12 20, 20 22, 24 22 Z" stroke-width="1"/>
+      <path d="M24 22 C 24 12, 36 10, 42 18 C 36 20, 28 22, 24 22 Z" stroke-width="1"/>
+      <!-- central petal -->
+      <path d="M24 22 C 22 14, 22 8, 24 3 C 26 8, 26 14, 24 22 Z" stroke-width="1.1"
+            fill="url(#goldSheen)" opacity="0.85"/>
+      <!-- seed pod marks -->
+      <circle cx="24" cy="20" r="0.9" fill="url(#goldFoil)"/>
+      <circle cx="24" cy="18" r="0.7" fill="url(#goldFoil)"/>
+    </g>
+  </svg>

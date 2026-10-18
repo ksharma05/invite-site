@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 150 64">
+    <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" opacity="0.9">
+      <!-- S -->
+      <path d="M40 20 C 34 16, 24 16, 24 24 C 24 32, 42 30, 44 40 C 45 48, 34 48, 28 44"
+            stroke-width="5"/>
+      <!-- heart -->
+      <path d="M82 34 C 82 28, 72 26, 70 32 C 68 26, 58 28, 58 34 C 58 42, 70 48, 70 48 C 70 48, 82 42, 82 34 Z"
+            stroke-width="4" fill="currentColor"/>
+      <!-- K -->
+      <path d="M102 16 L 102 48" stroke-width="5"/>
+      <path d="M102 31 L 128 16" stroke-width="5"/>
+      <path d="M102 31 L 128 48" stroke-width="5"/>
+    </g>
+  </svg>

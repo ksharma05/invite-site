@@ -1,0 +1,18 @@
+node_modules
+.next
+out
+build
+.env
+.env.local
+.env.*.local
+*.tsbuildinfo
+next-env.d.ts
+.DS_Store
+# Durable last-known-good snapshot directory (Phase 6) — runtime data, not source.
+.data/
+# Visual-check output and transient server logs
+visual-check/
+server*.log
+*.log
+.abacusai/
+

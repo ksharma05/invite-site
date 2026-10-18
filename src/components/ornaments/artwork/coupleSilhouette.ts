@@ -1,0 +1,36 @@
+/**
+ * Couple silhouette — a seated *dulha-dulhani* outline, used at ~8% opacity as
+ * the watermark inside the photo-mat. Drawn as simple figures; intentionally
+ * non-specific so it reads as a placeholder worth replacing.
+ */
+
+export const coupleSilhouette = {
+  name: "couple-silhouette",
+  viewBox: "0 0 160 140",
+  defs: "",
+  body: `
+    <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+       stroke-width="1.6" opacity="0.9">
+      <!-- groom figure (left) -->
+      <path d="M52 30 C 52 24 58 20 63 20 C 68 20 70 24 70 30"/>        <!-- head -->
+      <path d="M58 44 L 66 44 L 68 76 L 52 76 L 58 60 Z"/>             <!-- torso -->
+      <path d="M52 76 L 46 104 M 68 76 L 76 104"/>                     <!-- legs -->
+      <path d="M58 60 L 48 66 M 66 60 L 74 64"/>                       <!-- arms -->
+      <path d="M58 78 C 62 84 62 88 58 92"/>                           <!-- dastar puff -->
+
+      <!-- bride figure (right) -->
+      <path d="M100 32 C 100 26 106 22 111 22 C 116 22 120 26 120 32"/>  <!-- head -->
+      <path d="M106 46 L 116 46 L 118 78 L 100 52 Z"/>                   <!-- torso -->
+      <path d="M100 52 L 92 106 M 118 78 L 124 106"/>                    <!-- legs -->
+      <path d="M106 62 L 96 66 M 116 62 L 126 66"/>                      <!-- arms -->
+
+      <!-- veil & dupatta -->
+      <path d="M104 24 C 96 30 94 40 96 50 C 98 60 100 64 104 66"
+            stroke-width="1.2" opacity="0.8"/>
+      <path d="M116 78 C 124 84 130 90 130 98" stroke-width="1.2" opacity="0.8"/>
+
+      <!-- floor line -->
+      <path d="M30 110 C 80 120, 130 112, 150 106" stroke-width="1" opacity="0.5"/>
+    </g>
+  `,
+};

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 120 96"><defs>
+  <linearGradient id="goldFoil" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="#e9c766"/>
+    <stop offset="35%" stop-color="#c9a227"/>
+    <stop offset="68%" stop-color="#8a6a1d"/>
+    <stop offset="100%" stop-color="#d4af37"/>
+  </linearGradient>
+  <linearGradient id="goldFoilWarm" x1="0%" y1="100%" x2="100%" y2="0%">
+    <stop offset="0%" stop-color="#d4af37"/>
+    <stop offset="45%" stop-color="#c9a227"/>
+    <stop offset="72%" stop-color="#e9c766"/>
+    <stop offset="100%" stop-color="#8a6a1d"/>
+  </linearGradient>
+  <linearGradient id="goldSheen" x1="0%" y1="0%" x2="0%" y2="100%">
+    <stop offset="0%" stop-color="#fff3c4"/>
+    <stop offset="55%" stop-color="#e9c766"/>
+    <stop offset="100%" stop-color="#b8922a"/>
+  </linearGradient>
+  <filter id="softShadow" x="-40%" y="-40%" width="180%" height="180%">
+    <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="#3b2a21" flood-opacity="0.18"/>
+  </filter></defs>
+    <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Ribbon bow beneath the rings -->
+      <g stroke="currentColor" stroke-width="2.4" opacity="0.85">
+        <path d="M60 82 C 66 74, 74 74, 78 80 C 78 82, 70 84, 62 84 Z"/>
+        <path d="M60 82 C 54 74, 46 74, 42 80 C 42 82, 50 84, 58 84 Z"/>
+        <path d="M60 82 L 60 92"/>
+      </g>
+
+      <!-- Left ring -->
+      <circle cx="48" cy="34" r="20" stroke="url(#goldFoil)" stroke-width="5" filter="url(#softShadow)"/>
+      <circle cx="48" cy="34" r="20" stroke="#fff3c4" stroke-width="1" opacity="0.5"/>
+      <ellipse cx="48" cy="27" rx="11" ry="4" stroke="none" fill="url(#goldSheen)" opacity="0.35"/>
+
+      <!-- Right ring, dimmed toward the back of the overlap -->
+      <circle cx="72" cy="34" r="20" stroke="url(#goldFoilWarm)" stroke-width="5" filter="url(#softShadow)"/>
+      <circle cx="72" cy="34" r="20" stroke="#fff3c4" stroke-width="1" opacity="0.45"/>
+      <ellipse cx="72" cy="27" rx="8" ry="4" stroke="none" fill="url(#goldSheen)" opacity="0.3"/>
+    </g>
+  </svg>
