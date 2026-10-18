@@ -58,12 +58,12 @@ export function DownloadIcsButton({
     <button
       type="button"
       onClick={download}
-      className="inline-flex items-center gap-1 rounded-full border border-primary/40 px-4 py-1.5 text-sm font-medium text-primary-dark transition hover:bg-surface-alt"
+      className="inline-flex items-center gap-2 rounded-full border border-gold-line bg-gradient-to-r from-surface to-card-tint/60 px-4 py-2 text-xs font-semibold text-primary-dark shadow-sm transition-all duration-300 hover:border-gold hover:bg-gold/15 hover:text-primary-dark hover:shadow-soft active:scale-[0.98] sm:text-sm"
     >
       <svg
         aria-hidden="true"
         viewBox="0 0 24 24"
-        className="h-4 w-4"
+        className="h-4 w-4 text-gold-deep transition-transform duration-300 group-hover:scale-110"
         fill="none"
         stroke="currentColor"
         strokeWidth="2"
@@ -74,7 +74,7 @@ export function DownloadIcsButton({
         <path d="m7 10 5 5 5-5" />
         <rect x="3" y="13" width="18" height="8" rx="2" />
       </svg>
-      {t(lang, labelKey)}
+      <span>{t(lang, labelKey)}</span>
     </button>
   );
 }

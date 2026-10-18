@@ -61,13 +61,22 @@ export function Countdown({ targetIso, lang }: { targetIso: string; lang: Lang }
     ];
 
     return (
-      <div className="flex items-center justify-center gap-4" role="timer" aria-live="off">
-        {units.map(([value, label]) => (
-          <div key={label} className="flex flex-col items-center">
-            <span className="min-w-[2ch] text-center font-heading text-3xl text-primary-dark tabular-nums sm:text-4xl">
-              {String(value).padStart(2, "0")}
-            </span>
-            <span className="text-xs uppercase tracking-wide text-ink-muted">{t(lang, label)}</span>
+      <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4" role="timer" aria-live="off">
+        {units.map(([value, label], idx) => (
+          <div key={label} className="flex items-center gap-2 sm:gap-4">
+            <div className="countdown-tile flex min-w-[4.2rem] flex-col items-center justify-center rounded-2xl px-3 py-2.5 sm:min-w-[5.2rem] sm:px-4 sm:py-3.5">
+              <span className="min-w-[2ch] text-center font-heading text-3xl font-semibold text-primary-dark tabular-nums drop-shadow-[0_1px_2px_rgba(138,70,33,0.15)] sm:text-4xl">
+                {String(value).padStart(2, "0")}
+              </span>
+              <span className="mt-0.5 text-[10px] font-semibold tracking-widest uppercase text-gold-deep sm:text-xs">
+                {t(lang, label)}
+              </span>
+            </div>
+            {idx < units.length - 1 && (
+              <span className="pulse-glint hidden font-heading text-xl font-bold text-gold-bright sm:inline-block" aria-hidden="true">
+                :
+              </span>
+            )}
           </div>
         ))}
       </div>
@@ -75,13 +84,22 @@ export function Countdown({ targetIso, lang }: { targetIso: string; lang: Lang }
   }
 
   return (
-    <div className="flex items-center justify-center gap-4" role="timer">
-      {UNIT_LABELS.map((label) => (
-        <div key={label} className="flex flex-col items-center">
-          <span className="min-w-[2ch] text-center font-heading text-3xl text-primary-dark tabular-nums sm:text-4xl">
-            00
-          </span>
-          <span className="text-xs uppercase tracking-wide text-ink-muted">{t(lang, label)}</span>
+    <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4" role="timer">
+      {UNIT_LABELS.map((label, idx) => (
+        <div key={label} className="flex items-center gap-2 sm:gap-4">
+          <div className="countdown-tile flex min-w-[4.2rem] flex-col items-center justify-center rounded-2xl px-3 py-2.5 sm:min-w-[5.2rem] sm:px-4 sm:py-3.5">
+            <span className="min-w-[2ch] text-center font-heading text-3xl font-semibold text-primary-dark tabular-nums sm:text-4xl">
+              00
+            </span>
+            <span className="mt-0.5 text-[10px] font-semibold tracking-widest uppercase text-gold-deep sm:text-xs">
+              {t(lang, label)}
+            </span>
+          </div>
+          {idx < UNIT_LABELS.length - 1 && (
+            <span className="hidden font-heading text-xl font-bold text-gold-bright/60 sm:inline-block" aria-hidden="true">
+              :
+            </span>
+          )}
         </div>
       ))}
     </div>

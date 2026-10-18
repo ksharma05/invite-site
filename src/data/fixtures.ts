@@ -119,6 +119,47 @@ export const fixtureContent: InvitationContent = {
       },
     },
   ],
+  faqs: [
+    {
+      id: "attire",
+      order: 1,
+      active: true,
+      question: {
+        en: "What is the recommended attire for each ceremony?",
+        hi: "प्रत्येक समारोह के लिए उपयुक्त पहनावा क्या है?",
+      },
+      answer: {
+        en: "Traditional Indian attire is warmly encouraged: vibrant yellow for Haldi, colorful festive wear for Mehendi & Sangeet, and traditional formal/ethnic wear for the Wedding Ceremony.",
+        hi: "पारंपरिक भारतीय परिधानों का सादर स्वागत है: हल्दी के लिए पीला, मेहंदी एवं संगीत के लिए उत्सवमय रंगीन वस्त्र, और विवाह समारोह के लिए पारंपरिक परिधान।",
+      },
+    },
+    {
+      id: "stay",
+      order: 2,
+      active: true,
+      question: {
+        en: "Is accommodation arranged for outstation guests?",
+        hi: "क्या बाहर से पधारने वाले अतिथियों के ठहरने की व्यवस्था है?",
+      },
+      answer: {
+        en: "Yes, comfortable stay arrangements have been reserved for outstation guests. Please let the family know your arrival schedule in advance.",
+        hi: "हाँ, बाहर से आने वाले सभी सम्मानीय अतिथियों के लिए उचित आवास की व्यवस्था की गई है। कृपया अपने आगमन का समय परिवार को पूर्व में सूचित करें।",
+      },
+    },
+    {
+      id: "directions",
+      order: 3,
+      active: true,
+      question: {
+        en: "How do we reach the venue?",
+        hi: "समारोह स्थल तक पहुँचने का मार्ग क्या है?",
+      },
+      answer: {
+        en: "The venues are easily accessible by road from Bokaro Steel City and Ranchi. Direct Google Maps navigation links are provided on each event card above.",
+        hi: "सभी कार्यक्रम स्थल बोकारो एवं रांची से सड़क मार्ग द्वारा सुगमता से जुड़े हैं। प्रत्येक समारोह कार्ड पर गूगल मैप्स का सीधा लिंक उपलब्ध है।",
+      },
+    },
+  ],
 };
 
 export const WEDDING_DATE_ISO = "2026-11-25T10:00:00+05:30";
