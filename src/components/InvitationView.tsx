@@ -8,6 +8,7 @@ import { DownloadIcsButton } from "@/components/DownloadIcsButton";
 import { KashiScrollHero } from "@/components/KashiScrollHero";
 import { AuspiciousInvocation } from "@/components/AuspiciousInvocation";
 import { AccordionFAQ } from "@/components/AccordionFAQ";
+import { AdaptiveSectionVideo } from "@/components/AdaptiveSectionVideo";
 import { EventMotif } from "@/components/ornaments/EventMotif";
 import { Ornament } from "@/components/ornaments/Ornament";
 import { resolveCountdownTarget } from "@/lib/invitation/resolveCountdownTarget";
@@ -178,6 +179,30 @@ export function InvitationView({
 
         {/* 4. CELEBRATION ITINERARY (VERTICAL TIMELINE) */}
         <Reveal as="section" aria-labelledby="events-heading">
+          {/* Living Kashi Dawn Vignette Banner (Shot 2) */}
+          <div className="relative mb-8 overflow-hidden rounded-2xl border border-gold-line shadow-ornate">
+            <div className="relative h-44 sm:h-52 w-full overflow-hidden bg-black">
+              <AdaptiveSectionVideo
+                src="/videos/kashi-dawn.mp4"
+                poster="/videos/kashi-dawn-poster.jpg"
+                className="h-full w-full"
+                objectPosition="center 60%"
+                parallax={true}
+                parallaxSpeed={0.1}
+                overlayGradient="bg-gradient-to-t from-black/80 via-black/25 to-black/30"
+              >
+                <div className="absolute inset-0 flex flex-col items-center justify-end pb-4 px-4 text-center text-white">
+                  <span className="font-devanagari text-[11px] font-medium uppercase tracking-[0.25em] text-gold-bright drop-shadow">
+                    {isHi ? "काशी की पावन धरा" : "The Sacred Ghats of Kashi"}
+                  </span>
+                  <p className="mt-0.5 font-heading text-lg sm:text-2xl font-light text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
+                    {isHi ? "मांगलिक उत्सव यात्रा" : "Ceremonial Celebration"}
+                  </p>
+                </div>
+              </AdaptiveSectionVideo>
+            </div>
+          </div>
+
           <div className="mb-8 flex items-center justify-center gap-3 text-center">
             <span className="h-px w-12 bg-gradient-to-r from-transparent via-gold-line to-gold" aria-hidden="true" />
             <div className="flex flex-col items-center">
