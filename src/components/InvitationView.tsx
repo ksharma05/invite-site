@@ -1,6 +1,7 @@
 import type { InvitationContent, Lang, PersonName, Side, WeddingEvent } from "@/lib/content/types";
 import { t } from "@/lib/i18n/dictionary";
 import { Countdown } from "@/components/Countdown";
+import { FloatingControls } from "@/components/FloatingControls";
 import { OrnamentalDivider } from "@/components/OrnamentalDivider";
 import { Reveal } from "@/components/Reveal";
 import { DownloadIcsButton } from "@/components/DownloadIcsButton";
@@ -84,12 +85,16 @@ export function InvitationView({
   return (
     <div className="min-h-screen bg-surface selection:bg-primary selection:text-white">
       {/*
+        Fixed Viewport Controls: Royal Language Switcher (Eng | हिन्दी) & Music Toggle
+        Permanently pinned to viewport across all sections for flawless, immediate control.
+      */}
+      <FloatingControls lang={lang} side={side} />
+
+      {/*
         Hero: Cinematic Kashi Mandap video prologue with dual-mode card entrance.
-        Floating royal glassmorphic LanguageSwitcher reveals in lockstep with the card.
       */}
       <KashiScrollHero
         lang={lang}
-        side={side}
         primaryName={formatName(primaryName, lang)}
         secondaryName={formatName(secondaryName, lang)}
         blessing={family.blessing ? family.blessing[lang] : null}

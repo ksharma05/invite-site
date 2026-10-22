@@ -4,10 +4,9 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ScrollToPlugin } from "gsap/ScrollToPlugin";
-import type { Lang, Side } from "@/lib/content/types";
+import type { Lang } from "@/lib/content/types";
 import { Ornament } from "@/components/ornaments/Ornament";
 import { AdaptiveSectionVideo } from "@/components/AdaptiveSectionVideo";
-import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 
 // Register GSAP plugins safely on client
 if (typeof window !== "undefined") {
@@ -16,13 +15,11 @@ if (typeof window !== "undefined") {
 
 export function KashiScrollHero({
   lang,
-  side,
   primaryName,
   secondaryName,
   blessing,
 }: {
   lang: Lang;
-  side?: Side;
   primaryName: string;
   secondaryName: string;
   blessing: string | null;
@@ -32,7 +29,6 @@ export function KashiScrollHero({
   const pinWrapperRef = useRef<HTMLDivElement | null>(null);
   const heroHeaderRef = useRef<HTMLElement | null>(null);
   const cardRef = useRef<HTMLDivElement | null>(null);
-  const langSwitcherRef = useRef<HTMLDivElement | null>(null);
   const indicatorRef = useRef<HTMLDivElement | null>(null);
 
   const scrollTriggerRef = useRef<ScrollTrigger | null>(null);
@@ -46,9 +42,7 @@ export function KashiScrollHero({
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (prefersReducedMotion) {
       gsap.set(cardRef.current, { opacity: 1, y: 0, scale: 1 });
-      if (langSwitcherRef.current) {
-        gsap.set(langSwitcherRef.current, { opacity: 1, y: 0, pointerEvents: "auto" });
-      }
+      gsap.set("#floating-viewport-controls", { opacity: 1, y: 0, pointerEvents: "auto" });
       if (indicatorRef.current) {
         gsap.set(indicatorRef.current, { opacity: 1, y: 0 });
       }
@@ -57,9 +51,7 @@ export function KashiScrollHero({
 
     // Set initial GSAP values explicitly matching SSR style
     gsap.set(cardRef.current, { y: 90, opacity: 0, scale: 0.96 });
-    if (langSwitcherRef.current) {
-      gsap.set(langSwitcherRef.current, { y: -14, opacity: 0, pointerEvents: "none" });
-    }
+    gsap.set("#floating-viewport-controls", { y: -14, opacity: 0, pointerEvents: "none" });
     if (indicatorRef.current) {
       gsap.set(indicatorRef.current, { y: 16, opacity: 0 });
     }
@@ -75,7 +67,7 @@ export function KashiScrollHero({
     window.addEventListener("touchstart", handleUserGesture, { passive: true });
 
     // Choreographed Scroll Scrub Timeline with Pinning:
-    // Pinned distance: 100vh ("quick" scroll mode)
+    // Pinned distance: 1.1x viewport height ("quick" scroll mode)
     // 0.0 -> 0.45: Card floats up naturally from bottom with fade-in into dead center
     // 0.45 -> 1.0: Card remains firmly locked in center for reading
     const tl = gsap.timeline({
@@ -110,20 +102,18 @@ export function KashiScrollHero({
       0
     );
 
-    // 2. Language switcher reveals at top right
-    if (langSwitcherRef.current) {
-      tl.to(
-        langSwitcherRef.current,
-        {
-          y: 0,
-          opacity: 1,
-          pointerEvents: "auto",
-          ease: "power2.out",
-          duration: 0.35,
-        },
-        0.1
-      );
-    }
+    // 2. Fixed viewport controls (Language Switcher + Music Toggle) reveal at top right
+    tl.to(
+      "#floating-viewport-controls",
+      {
+        y: 0,
+        opacity: 1,
+        pointerEvents: "auto",
+        ease: "power2.out",
+        duration: 0.35,
+      },
+      0.1
+    );
 
     // 3. Scroll indicator reveals at bottom
     if (indicatorRef.current) {
@@ -184,15 +174,6 @@ export function KashiScrollHero({
         ref={heroHeaderRef}
         className="relative h-screen min-h-[640px] w-full overflow-hidden bg-black text-white"
       >
-        {/* Floating Royal Language Switcher (reveals smoothly with card) */}
-        <div
-          ref={langSwitcherRef}
-          className="absolute top-5 right-5 z-50 sm:top-7 sm:right-8 pointer-events-none"
-          style={{ opacity: 0, transform: "translate3d(0, -14px, 0)" }}
-        >
-          <LanguageSwitcher lang={lang} side={side} />
-        </div>
-
         {/* 
           Background: Shot 3 (Mandap Portal Reveal overlooking moonlit Kashi & Aarti Fire)
           Unobstructed cinematic view on initial render.
