@@ -57,6 +57,13 @@ export interface DeviceHeuristicsConfig {
    * Default: 0.2
    */
   observerThreshold: number;
+
+  /**
+   * Whether section videos should play only once when in viewport, then hold on the final frame.
+   * Reloading the page resets this so they replay on the next session.
+   * Default: true
+   */
+  playOncePerSession: boolean;
 }
 
 export const DEFAULT_HEURISTICS_CONFIG: DeviceHeuristicsConfig = {
@@ -68,4 +75,5 @@ export const DEFAULT_HEURISTICS_CONFIG: DeviceHeuristicsConfig = {
   webglMinTextureSize: 4096,
   iosLegacyScreenHeightThreshold: 667,
   observerThreshold: 0.2,
+  playOncePerSession: true,
 };

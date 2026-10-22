@@ -12,14 +12,17 @@ export interface AdaptiveSectionVideoProps {
   parallax?: boolean;
   parallaxSpeed?: number;
   overlayGradient?: string;
+  playOnce?: boolean;
   children?: React.ReactNode;
 }
 
 /**
  * AdaptiveSectionVideo
  * 
- * Auto-plays when scrolled into view and immediately pauses when scrolled out of view.
- * Ensures only 1 video hardware decoder is active at any time on mobile.
+ * Plays only when scrolled into the viewport.
+ * When `playOnce` is true (default), each video plays exactly once through its duration
+ * and permanently locks on its final resting frame.
+ * Reloading the page cleanly resets playback for the new session.
  * On low-tier devices, all JS scroll tracking / parallax is disabled for 60fps performance.
  */
 export function AdaptiveSectionVideo({
@@ -30,15 +33,17 @@ export function AdaptiveSectionVideo({
   parallax = false,
   parallaxSpeed = 0.15,
   overlayGradient,
+  playOnce = DEFAULT_HEURISTICS_CONFIG.playOncePerSession,
   children,
 }: AdaptiveSectionVideoProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const hasEndedRef = useRef<boolean>(false);
   const { isLowTier, isHydrated } = useDeviceTier();
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [, setIsPlaying] = useState(false);
   const [scrollYOffset, setScrollYOffset] = useState(0);
 
-  // 1. IntersectionObserver for zero-crash decoder lifecycle
+  // 1. IntersectionObserver for viewport-triggered single-play lifecycle
   useEffect(() => {
     const video = videoRef.current;
     const container = containerRef.current;
@@ -50,6 +55,11 @@ export function AdaptiveSectionVideo({
       (entries) => {
         for (const entry of entries) {
           if (entry.isIntersecting) {
+            // If already played its single run, stay held on the final frame
+            if (playOnce && hasEndedRef.current) {
+              return;
+            }
+
             video
               .play()
               .then(() => setIsPlaying(true))
@@ -58,8 +68,11 @@ export function AdaptiveSectionVideo({
                 setIsPlaying(false);
               });
           } else {
-            video.pause();
-            setIsPlaying(false);
+            // When leaving viewport, pause mid-play video to save battery and decoders
+            if (!hasEndedRef.current) {
+              video.pause();
+              setIsPlaying(false);
+            }
           }
         }
       },
@@ -77,7 +90,18 @@ export function AdaptiveSectionVideo({
         video.pause();
       }
     };
-  }, []);
+  }, [playOnce]);
+
+  // Handle single-play completion: locks on the final resting frame
+  const handleEnded = () => {
+    if (playOnce) {
+      hasEndedRef.current = true;
+      setIsPlaying(false);
+      if (videoRef.current) {
+        videoRef.current.pause();
+      }
+    }
+  };
 
   // 2. High-tier only: Optional gentle scroll parallax (disabled on low-tier devices)
   useEffect(() => {
@@ -124,9 +148,10 @@ export function AdaptiveSectionVideo({
         src={src}
         poster={poster}
         muted
-        loop
+        loop={!playOnce}
         playsInline
         preload="metadata"
+        onEnded={handleEnded}
         className="absolute inset-0 w-full h-full object-cover transition-transform duration-100 ease-out pointer-events-none"
         style={{
           objectPosition,
