@@ -1,6 +1,5 @@
 import type { InvitationContent, Lang, PersonName, Side, WeddingEvent } from "@/lib/content/types";
 import { t } from "@/lib/i18n/dictionary";
-import { NavigationHeader } from "@/components/NavigationHeader";
 import { Countdown } from "@/components/Countdown";
 import { OrnamentalDivider } from "@/components/OrnamentalDivider";
 import { Reveal } from "@/components/Reveal";
@@ -84,15 +83,13 @@ export function InvitationView({
 
   return (
     <div className="min-h-screen bg-surface selection:bg-primary selection:text-white">
-      {/* Sticky Navigation Header with Scroll Progress */}
-      <NavigationHeader lang={lang} side={side} />
-
       {/*
-        Hero: Scroll-controlled stop-motion journey of Kashi (Varanasi) Ghats
-        Dawn on Ganga -> Evening Ganga Aarti -> Royal Mandap Portal with couple names.
+        Hero: Cinematic Kashi Mandap video prologue with dual-mode card entrance.
+        Floating royal glassmorphic LanguageSwitcher reveals in lockstep with the card.
       */}
       <KashiScrollHero
         lang={lang}
+        side={side}
         primaryName={formatName(primaryName, lang)}
         secondaryName={formatName(secondaryName, lang)}
         blessing={family.blessing ? family.blessing[lang] : null}

@@ -13,6 +13,7 @@ export interface AdaptiveSectionVideoProps {
   parallaxSpeed?: number;
   overlayGradient?: string;
   playOnce?: boolean;
+  onEnded?: () => void;
   children?: React.ReactNode;
 }
 
@@ -34,6 +35,7 @@ export function AdaptiveSectionVideo({
   parallaxSpeed = 0.15,
   overlayGradient,
   playOnce = DEFAULT_HEURISTICS_CONFIG.playOncePerSession,
+  onEnded,
   children,
 }: AdaptiveSectionVideoProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -101,6 +103,7 @@ export function AdaptiveSectionVideo({
         videoRef.current.pause();
       }
     }
+    onEnded?.();
   };
 
   // 2. High-tier only: Optional gentle scroll parallax (disabled on low-tier devices)
