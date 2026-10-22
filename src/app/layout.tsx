@@ -19,7 +19,7 @@ const bodyFont = Noto_Sans({
 });
 
 const devanagariFont = Noto_Serif_Devanagari({
-  subsets: ["devanagari"],
+  subsets: ["devanagari", "latin"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-devanagari",
   display: "swap",
