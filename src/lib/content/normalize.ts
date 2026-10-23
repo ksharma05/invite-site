@@ -27,6 +27,30 @@ export function emptyToUndefined(value: string | undefined): string | undefined 
 }
 
 /**
+ * Automatically converts Google Drive share URLs, view URLs, or open URLs
+ * into direct CDN image URLs (https://lh3.googleusercontent.com/d/{id}).
+ * Preserves standard URLs and relative paths verbatim.
+ */
+export function resolveImageUrl(value: string | undefined): string | undefined {
+  const v = normalizeCell(value);
+  if (!v) return undefined;
+
+  // Google Drive format 1: /file/d/{fileId}/view
+  const fileDMatch = v.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (fileDMatch && fileDMatch[1]) {
+    return `https://lh3.googleusercontent.com/d/${fileDMatch[1]}`;
+  }
+
+  // Google Drive format 2: drive.google.com?...id={fileId}
+  const idMatch = v.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+  if (idMatch && idMatch[1] && v.includes("drive.google.com")) {
+    return `https://lh3.googleusercontent.com/d/${idMatch[1]}`;
+  }
+
+  return v;
+}
+
+/**
  * A spreadsheet row as returned by the Sheets API: header cell name -> raw cell value.
  * Values are not yet validated against the content schema.
  */

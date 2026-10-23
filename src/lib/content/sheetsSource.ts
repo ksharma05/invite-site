@@ -1,14 +1,16 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
-import type { FaqItem, InvitationContent, WeddingEvent } from "@/lib/content/types";
+import type { FaqItem, GalleryItem, InvitationContent, WeddingEvent } from "@/lib/content/types";
+import type { SheetRow } from "@/lib/content/normalize";
 import {
   familyConfigSchema,
   findDuplicateEventIds,
   parseEventRow,
   parseFaqRow,
+  parseGalleryRow,
 } from "@/lib/content/schema";
 import { fetchSheetTab } from "@/lib/content/sheetsClient";
-import { mapEventRow, mapFaqRow, mapFamily } from "@/lib/content/sheetsMapping";
+import { mapEventRow, mapFaqRow, mapFamily, mapGalleryRow } from "@/lib/content/sheetsMapping";
 import { getServerEnv } from "@/lib/env/server";
 
 export type SheetsContentResult =
@@ -84,12 +86,36 @@ async function loadFromSheets(): Promise<SheetsContentResult> {
     }
   });
 
+  let galleryRows: SheetRow[] = [];
+  try {
+    galleryRows = await fetchSheetTab("Gallery");
+  } catch {
+    // Gallery tab is optional; ignore if not present in the sheet
+  }
+
+  const gallery: GalleryItem[] = [];
+  galleryRows.forEach((row, index) => {
+    const result = parseGalleryRow(mapGalleryRow(row));
+    if (result.success) {
+      if (result.data.active) {
+        gallery.push(result.data);
+      }
+    } else {
+      logRejectedRow(
+        "Gallery",
+        index,
+        result.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`)
+      );
+    }
+  });
+
   return {
     kind: "ok",
     content: {
       family: familyResult.data,
       events: events.sort((a, b) => a.order - b.order),
       faqs: faqs.length > 0 ? faqs.sort((a, b) => a.order - b.order) : undefined,
+      gallery: gallery.length > 0 ? gallery.sort((a, b) => a.order - b.order) : undefined,
     },
   };
 }

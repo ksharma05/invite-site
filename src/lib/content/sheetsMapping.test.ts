@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { mapEventRow, mapFaqRow, mapFamily } from "./sheetsMapping";
-import { parseEventRow, parseFaqRow, familyConfigSchema } from "./schema";
+import { mapEventRow, mapFaqRow, mapFamily, mapGalleryRow } from "./sheetsMapping";
+import { parseEventRow, parseFaqRow, parseGalleryRow, familyConfigSchema } from "./schema";
 
 describe("mapEventRow", () => {
   it("maps a well-formed row into a valid event", () => {
@@ -106,5 +106,41 @@ describe("mapFamily", () => {
     ];
     const candidate = mapFamily(peopleRows, wordingRows) as { brideParents: { en: string }[] };
     expect(candidate.brideParents.map((p) => p.en)).toEqual(["First", "Second"]);
+  });
+});
+
+describe("mapGalleryRow", () => {
+  it("maps a well-formed gallery row with captions", () => {
+    const row = {
+      id: "photo-1",
+      order: "1",
+      active: "TRUE",
+      imageUrl: "https://drive.google.com/file/d/1AbC-123_xyz/view?usp=sharing",
+      caption_en: "At the Ghats",
+      caption_hi: "घाटों पर",
+    };
+    const mapped = mapGalleryRow(row);
+    const result = parseGalleryRow(mapped);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.imageUrl).toBe("https://lh3.googleusercontent.com/d/1AbC-123_xyz");
+      expect(result.data.caption?.en).toBe("At the Ghats");
+      expect(result.data.caption?.hi).toBe("घाटों पर");
+    }
+  });
+
+  it("maps a gallery row without captions", () => {
+    const row = {
+      id: "photo-2",
+      order: "2",
+      active: "TRUE",
+      imageUrl: "/gallery/candid.webp",
+    };
+    const mapped = mapGalleryRow(row);
+    const result = parseGalleryRow(mapped);
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.caption).toBeUndefined();
+    }
   });
 });

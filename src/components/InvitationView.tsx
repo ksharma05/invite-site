@@ -5,6 +5,7 @@ import { FloatingControls } from "@/components/FloatingControls";
 import { OrnamentalDivider } from "@/components/OrnamentalDivider";
 import { Reveal } from "@/components/Reveal";
 import { ItineraryTimeline } from "@/components/ItineraryTimeline";
+import { PhotoGallery } from "@/components/PhotoGallery";
 import { KashiScrollHero } from "@/components/KashiScrollHero";
 import { AuspiciousInvocation } from "@/components/AuspiciousInvocation";
 import { AccordionFAQ } from "@/components/AccordionFAQ";
@@ -109,10 +110,10 @@ export function InvitationView({
                 <span className="text-gold-deep">{t(lang, "hostedBy")}:</span>{" "}
                 {hostParents.map((p) => formatName(p, lang)).join(" & ")}
               </p>
-              <p className="text-sm">
+              {/* <p className="text-sm">
                 <span className="font-medium text-ink">{t(lang, "withOurFamilies")}:</span>{" "}
                 {otherParents.map((p) => formatName(p, lang)).join(" & ")}
-              </p>
+              </p> */}
             </div>
           </div>
         </Reveal>
@@ -158,9 +159,9 @@ export function InvitationView({
                 overlayGradient="bg-gradient-to-t from-black/80 via-black/25 to-black/30"
               >
                 <div className="absolute inset-0 flex flex-col items-center justify-end pb-4 px-4 text-center text-white">
-                  <span className="font-devanagari text-[11px] font-medium uppercase tracking-[0.25em] text-gold-bright drop-shadow">
+                  {/* <span className="font-devanagari text-[11px] font-medium uppercase tracking-[0.25em] text-gold-bright drop-shadow">
                     {isHi ? "काशी की पावन धरा" : "The Sacred Ghats of Kashi"}
-                  </span>
+                  </span> */}
                   <p className="mt-0.5 font-heading text-lg sm:text-2xl font-light text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
                     {isHi ? "मांगलिक उत्सव यात्रा" : "Ceremonial Celebration"}
                   </p>
@@ -206,34 +207,10 @@ export function InvitationView({
           </Reveal>
         )}
 
-        {/* 6. SACRED MEMORIES / PHOTO CORNER */}
-        <section
-          aria-label={isHi ? "पावन स्मृतियाँ" : "Sacred Memories in Kashi"}
-          className="card-glass-ornate gold-shimmer-sweep relative overflow-hidden rounded-2xl p-8 text-center sm:p-10"
-        >
-          {/* Subtle corner flourishes */}
-          <div className="pointer-events-none absolute -top-3 -left-3 h-12 w-12 opacity-35">
-            <Ornament name="paisley-corner" className="h-full w-full text-gold" />
-          </div>
-          <div className="pointer-events-none absolute -top-3 -right-3 h-12 w-12 rotate-90 opacity-35">
-            <Ornament name="paisley-corner" className="h-full w-full text-gold" />
-          </div>
-
-          <div className="relative z-10 flex flex-col items-center">
-            <Ornament
-              name="couple-silhouette"
-              className="pulse-glint mx-auto h-12 w-28 text-gold drop-shadow-[0_2px_8px_rgba(201,162,39,0.35)]"
-            />
-            <h3 className="mt-4 font-heading text-2xl text-primary-dark sm:text-3xl">
-              {isHi ? "पावन स्मृतियाँ • काशी" : "Sacred Memories in Kashi"}
-            </h3>
-            <p className="mt-2 max-w-md text-sm leading-relaxed text-ink-muted">
-              {isHi
-                ? "विवाह के पावन क्षण एवं उत्सव की तस्वीरें शीघ्र ही यहाँ प्रकाशित की जाएंगी।"
-                : "Cherished moments, candid memories, and wedding photographs will be shared here soon."}
-            </p>
-          </div>
-        </section>
+        {/* 6. SACRED MEMORIES / PHOTO GALLERY */}
+        <Reveal as="section" aria-label={isHi ? "पावन स्मृतियाँ" : "Sacred Memories in Kashi"}>
+          <PhotoGallery items={content.gallery} lang={lang} />
+        </Reveal>
 
         <OrnamentalDivider />
 

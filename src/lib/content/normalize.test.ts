@@ -5,6 +5,7 @@ import {
   normalizeBoolean,
   normalizeCell,
   normalizeOrder,
+  resolveImageUrl,
   rowsToObjects,
 } from "./normalize";
 
@@ -79,5 +80,33 @@ describe("rowsToObjects", () => {
   it("drops trailing fully-blank rows", () => {
     const values = [["id"], ["haldi"], ["", ""]];
     expect(rowsToObjects(values)).toEqual([{ id: "haldi" }]);
+  });
+});
+
+describe("resolveImageUrl", () => {
+  it("converts Google Drive file/d share links to lh3 CDN URLs", () => {
+    const url = "https://drive.google.com/file/d/1AbCdEfGhIjKlMnOpQrStUvWxYz/view?usp=sharing";
+    expect(resolveImageUrl(url)).toBe("https://lh3.googleusercontent.com/d/1AbCdEfGhIjKlMnOpQrStUvWxYz");
+  });
+
+  it("converts Google Drive open?id links to lh3 CDN URLs", () => {
+    const url = "https://drive.google.com/open?id=12345_abc-XYZ";
+    expect(resolveImageUrl(url)).toBe("https://lh3.googleusercontent.com/d/12345_abc-XYZ");
+  });
+
+  it("converts Google Drive uc?export=view&id links to lh3 CDN URLs", () => {
+    const url = "https://drive.google.com/uc?export=view&id=FILE_999";
+    expect(resolveImageUrl(url)).toBe("https://lh3.googleusercontent.com/d/FILE_999");
+  });
+
+  it("preserves standard external URLs and relative paths unchanged", () => {
+    expect(resolveImageUrl("https://i.imgur.com/photo.jpg")).toBe("https://i.imgur.com/photo.jpg");
+    expect(resolveImageUrl("/gallery/photo.webp")).toBe("/gallery/photo.webp");
+  });
+
+  it("returns undefined for empty or whitespace inputs", () => {
+    expect(resolveImageUrl("")).toBeUndefined();
+    expect(resolveImageUrl("   ")).toBeUndefined();
+    expect(resolveImageUrl(undefined)).toBeUndefined();
   });
 });

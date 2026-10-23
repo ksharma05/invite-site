@@ -61,6 +61,14 @@ export interface FaqItem {
   answer: Bilingual;
 }
 
+export interface GalleryItem {
+  id: string;
+  order: number;
+  active: boolean;
+  imageUrl: string;
+  caption?: Bilingual;
+}
+
 export interface InvitationContent {
   family: FamilyConfig;
   events: WeddingEvent[];
@@ -69,4 +77,9 @@ export interface InvitationContent {
    * it is not a placeholder/empty-state section like events.
    */
   faqs?: FaqItem[];
+  /**
+   * Optional. Absent or empty means the photo gallery displays the celebratory
+   * placeholder until family publishes photos.
+   */
+  gallery?: GalleryItem[];
 }

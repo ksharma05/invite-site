@@ -27,6 +27,7 @@ import {
   normalizeBoolean,
   normalizeCell,
   normalizeOrder,
+  resolveImageUrl,
   type SheetRow,
 } from "@/lib/content/normalize";
 
@@ -57,7 +58,7 @@ export function mapEventRow(row: SheetRow): unknown {
       emptyToUndefined(row.notes_en) || emptyToUndefined(row.notes_hi)
         ? { en: normalizeCell(row.notes_en), hi: normalizeCell(row.notes_hi) }
         : undefined,
-    imageUrl: emptyToUndefined(row.imageUrl),
+    imageUrl: resolveImageUrl(emptyToUndefined(row.imageUrl)),
   };
 }
 
@@ -68,6 +69,27 @@ export function mapFaqRow(row: SheetRow): unknown {
     active: normalizeBoolean(row.active),
     question: { en: normalizeCell(row.question_en), hi: normalizeCell(row.question_hi) },
     answer: { en: normalizeCell(row.answer_en), hi: normalizeCell(row.answer_hi) },
+  };
+}
+
+export function mapGalleryRow(row: SheetRow): unknown {
+  const rawUrl = normalizeCell(row.imageUrl);
+  const resolvedUrl = resolveImageUrl(rawUrl);
+
+  const hasCaption =
+    Boolean(normalizeCell(row.caption_en)) || Boolean(normalizeCell(row.caption_hi));
+
+  return {
+    id: normalizeCell(row.id),
+    order: normalizeOrder(row.order),
+    active: normalizeBoolean(row.active),
+    imageUrl: resolvedUrl,
+    caption: hasCaption
+      ? {
+          en: normalizeCell(row.caption_en) || normalizeCell(row.caption_hi) || "",
+          hi: normalizeCell(row.caption_hi) || normalizeCell(row.caption_en) || "",
+        }
+      : undefined,
   };
 }
 

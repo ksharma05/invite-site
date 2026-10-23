@@ -68,11 +68,21 @@ export const faqItemSchema = z.object({
   answer: bilingualSchema,
 });
 
+export const galleryItemSchema = z.object({
+  id: z.string().min(1, "Gallery item id is required"),
+  order: z.number().int(),
+  active: z.boolean(),
+  imageUrl: z.string().min(1, "imageUrl is required"),
+  caption: bilingualSchema.optional(),
+});
+
 export const invitationContentSchema = z.object({
   family: familyConfigSchema,
   events: z.array(weddingEventSchema),
   /** Absent/empty means the FAQ section is skipped entirely — not an "optional feature" approval. */
   faqs: z.array(faqItemSchema).optional(),
+  /** Absent/empty means the photo gallery displays the celebratory placeholder. */
+  gallery: z.array(galleryItemSchema).optional(),
 });
 
 /** Validates one event row; used so a single malformed row can be skipped without failing the batch. */
@@ -83,6 +93,11 @@ export function parseEventRow(row: unknown) {
 /** Validates one FAQ row; same row-skip philosophy as parseEventRow. */
 export function parseFaqRow(row: unknown) {
   return faqItemSchema.safeParse(row);
+}
+
+/** Validates one Gallery row; same row-skip philosophy as parseEventRow. */
+export function parseGalleryRow(row: unknown) {
+  return galleryItemSchema.safeParse(row);
 }
 
 /** Detects duplicate stable ids among otherwise-valid events (Phase 5 acceptance criterion). */
