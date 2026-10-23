@@ -4,12 +4,11 @@ import { Countdown } from "@/components/Countdown";
 import { FloatingControls } from "@/components/FloatingControls";
 import { OrnamentalDivider } from "@/components/OrnamentalDivider";
 import { Reveal } from "@/components/Reveal";
-import { DownloadIcsButton } from "@/components/DownloadIcsButton";
+import { ItineraryTimeline } from "@/components/ItineraryTimeline";
 import { KashiScrollHero } from "@/components/KashiScrollHero";
 import { AuspiciousInvocation } from "@/components/AuspiciousInvocation";
 import { AccordionFAQ } from "@/components/AccordionFAQ";
 import { AdaptiveSectionVideo } from "@/components/AdaptiveSectionVideo";
-import { EventMotif } from "@/components/ornaments/EventMotif";
 import { Ornament } from "@/components/ornaments/Ornament";
 import { resolveCountdownTarget } from "@/lib/invitation/resolveCountdownTarget";
 
@@ -17,41 +16,6 @@ function formatName(name: PersonName, lang: Lang): string {
   const honorific = lang === "hi" ? name.honorificHi : name.honorificEn;
   const value = lang === "hi" ? name.hi : name.en;
   return honorific ? `${honorific} ${value}` : value;
-}
-
-function formatDateTime(iso: string, lang: Lang): string {
-  return new Intl.DateTimeFormat(lang === "hi" ? "hi-IN" : "en-IN", {
-    dateStyle: "full",
-    timeStyle: "short",
-    timeZone: "Asia/Kolkata",
-  }).format(new Date(iso));
-}
-
-interface CalendarEntry {
-  startAt: string;
-  endAt?: string;
-  title: string;
-  details: string;
-  location: string;
-}
-
-/** Builds a Google Calendar URL. Timestamps are already validated in UTC/offset form; the `Z` forms are used verbatim after stripping to ISO. */
-function googleCalendarUrl(entry: CalendarEntry): string {
-  const toGCal = (iso: string) =>
-    new Date(iso)
-      .toISOString()
-      .replace(/[-:]/g, "")
-      .replace(/\.\d{3}/, "");
-  const params = new URLSearchParams({
-    action: "TEMPLATE",
-    text: entry.title,
-    details: entry.details,
-    location: entry.location,
-    dates: entry.endAt
-      ? `${toGCal(entry.startAt)}/${toGCal(entry.endAt)}`
-      : `${toGCal(entry.startAt)}/${toGCal(entry.startAt)}`,
-  });
-  return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }
 
 export function InvitationView({
@@ -218,185 +182,8 @@ export function InvitationView({
             <span className="h-px w-12 bg-gradient-to-l from-transparent via-gold-line to-gold" aria-hidden="true" />
           </div>
 
-          {visibleEvents.length === 0 ? (
-            <p className="mt-4 text-center text-ink-muted">{t(lang, "noEventsYet")}</p>
-          ) : (
-            <div className="relative pl-6 sm:pl-10">
-              {/* Continuous vertical timeline stem */}
-              <div
-                className="timeline-stem absolute top-6 bottom-6 left-2.5 sm:left-4 w-[2px] rounded-full"
-                aria-hidden="true"
-              />
-
-              <ol className="flex flex-col gap-8">
-                {visibleEvents.map((event) => (
-                  <li key={event.id} className="relative">
-                    {/* Timeline Node Badge with Ceremony Motif */}
-                    <div
-                      className="absolute top-6 -left-[27px] sm:-left-[37px] z-10 flex h-8 w-8 sm:h-10 sm:w-10 items-center justify-center rounded-full border-2 border-gold bg-[#fefbf7] shadow-[0_0_12px_rgba(201,162,39,0.35)] transition-transform duration-300 hover:scale-110"
-                      aria-hidden="true"
-                    >
-                      <EventMotif
-                        id={event.id}
-                        titleEn={event.title.en}
-                        titleHi={event.title.hi}
-                        className="h-4 w-4 sm:h-5 sm:w-5 text-gold-deep"
-                      />
-                    </div>
-
-                    {/* Event Card */}
-                    <div className="group card-glass-ornate relative overflow-hidden rounded-2xl p-6 transition-all duration-300 hover:border-gold hover:shadow-ornate sm:p-7">
-                      <div className="flex items-start justify-between gap-4">
-                        <div>
-                          <div className="flex items-center gap-3">
-                            <h3 className="font-heading text-2xl font-medium text-ink transition-colors duration-200 group-hover:text-primary-dark sm:text-3xl" lang={lang}>
-                              {event.title[lang]}
-                            </h3>
-                          </div>
-
-                          {event.subtitle && (
-                            <p className="mt-1 text-sm font-semibold tracking-wide text-gold-deep" lang={lang}>
-                              {event.subtitle[lang]}
-                            </p>
-                          )}
-                        </div>
-                      </div>
-
-                      {/* Date & Time with SVG Calendar Icon */}
-                      <div className="mt-4.5 flex items-center gap-2.5 rounded-xl border border-gold-line/40 bg-surface-alt/30 px-3.5 py-2.5 text-sm font-semibold text-primary-dark">
-                        <svg
-                          className="h-4 w-4 shrink-0 text-gold-deep"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          aria-hidden="true"
-                        >
-                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                          <line x1="16" y1="2" x2="16" y2="6" />
-                          <line x1="8" y1="2" x2="8" y2="6" />
-                          <line x1="3" y1="10" x2="21" y2="10" />
-                        </svg>
-                        <span>{formatDateTime(event.startAt, lang)}</span>
-                      </div>
-
-                      {/* Venue with SVG Pin Icon */}
-                      <div className="mt-3.5 space-y-1 text-sm">
-                        <div className="flex items-start gap-2.5">
-                          <svg
-                            className="mt-0.5 h-4 w-4 shrink-0 text-gold-deep"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            aria-hidden="true"
-                          >
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                            <circle cx="12" cy="10" r="3" />
-                          </svg>
-                          <p className="font-semibold text-ink" lang={lang}>
-                            {event.venueName[lang]}
-                          </p>
-                        </div>
-                        <p className="pl-6 text-ink-muted text-xs sm:text-sm" lang={lang}>
-                          {event.venueAddress[lang]}
-                        </p>
-                      </div>
-
-                      {event.notes && (
-                        <p
-                          className="mt-3 border-l-2 border-gold-line pl-3 text-xs italic text-ink-muted"
-                          lang={lang}
-                        >
-                          {event.notes[lang]}
-                        </p>
-                      )}
-
-                      {/* Action Buttons */}
-                      <div className="mt-5 flex flex-wrap gap-2.5 pt-2 border-t border-gold-line/30">
-                        {event.mapUrl && (
-                          <a
-                            href={event.mapUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-2 rounded-full border border-gold-line bg-gradient-to-r from-surface to-card-tint/60 px-4 py-2 text-xs font-semibold text-primary-dark shadow-sm transition-all duration-300 hover:border-gold hover:bg-gold/15 hover:text-primary-dark hover:shadow-soft active:scale-[0.98] sm:text-sm"
-                          >
-                            <svg
-                              className="h-4 w-4 text-gold-deep"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              aria-hidden="true"
-                            >
-                              <circle cx="12" cy="12" r="10" />
-                              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76" />
-                            </svg>
-                            <span>{t(lang, "viewOnMap")}</span>
-                          </a>
-                        )}
-                        <a
-                          href={googleCalendarUrl({
-                            startAt: event.startAt,
-                            endAt: event.endAt,
-                            title: event.title[lang],
-                            details: event.venueName[lang],
-                            location: event.venueAddress[lang],
-                          })}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-2 rounded-full border border-gold-line bg-gradient-to-r from-surface to-card-tint/60 px-4 py-2 text-xs font-semibold text-primary-dark shadow-sm transition-all duration-300 hover:border-gold hover:bg-gold/15 hover:text-primary-dark hover:shadow-soft active:scale-[0.98] sm:text-sm"
-                        >
-                          <svg
-                            className="h-4 w-4 text-gold-deep"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            aria-hidden="true"
-                          >
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                            <line x1="16" y1="2" x2="16" y2="6" />
-                            <line x1="8" y1="2" x2="8" y2="6" />
-                            <line x1="3" y1="10" x2="21" y2="10" />
-                            <line x1="12" y1="14" x2="12" y2="18" />
-                            <line x1="10" y1="16" x2="14" y2="16" />
-                          </svg>
-                          <span>{t(lang, "addToCalendar")}</span>
-                        </a>
-                        <DownloadIcsButton
-                          startAt={event.startAt}
-                          endAt={event.endAt}
-                          title={event.title[lang]}
-                          description={event.venueName[lang]}
-                          location={event.venueAddress[lang]}
-                          labelKey="downloadIcs"
-                          lang={lang}
-                        />
-                      </div>
-
-                      {event.dressCode && (
-                        <div className="mt-4 flex items-center gap-2 border-t border-border/50 pt-3 text-xs uppercase tracking-wider text-ink-muted">
-                          <span className="font-semibold text-gold-deep">{t(lang, "dressCode")}:</span>
-                          <span className="rounded-full border border-gold-line bg-accent/15 px-3 py-0.5 font-semibold text-accent shadow-sm">
-                            {event.dressCode[lang]}
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          )}
+          {/* Interactive Sticky Focal Node Itinerary Timeline */}
+          <ItineraryTimeline events={visibleEvents} lang={lang} />
         </Reveal>
 
         {/* 5. GOOD TO KNOW (INTERACTIVE ACCORDION FAQS) */}
