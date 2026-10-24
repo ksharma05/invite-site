@@ -131,7 +131,10 @@ export function InvitationView({
             <span className="text-xs text-gold/60">✦</span>
           </div>
 
-          <h2 id="countdown-heading" className="font-heading text-2xl font-medium text-primary-dark sm:text-3xl">
+          <h2
+            id="countdown-heading"
+            className="font-heading text-2xl font-medium text-primary-dark sm:text-3xl"
+          >
             {t(lang, "countdownHeading")}
           </h2>
 
@@ -171,16 +174,25 @@ export function InvitationView({
           </div>
 
           <div className="mb-8 flex items-center justify-center gap-3 text-center">
-            <span className="h-px w-12 bg-gradient-to-r from-transparent via-gold-line to-gold" aria-hidden="true" />
+            <span
+              className="h-px w-12 bg-gradient-to-r from-transparent via-gold-line to-gold"
+              aria-hidden="true"
+            />
             <div className="flex flex-col items-center">
               <span className="text-xs font-semibold tracking-[0.2em] uppercase text-gold-deep">
                 {isHi ? "मांगलिक उत्सव" : "Ceremonial Journey"}
               </span>
-              <h2 id="events-heading" className="mt-0.5 font-heading text-2xl text-primary-dark sm:text-3xl">
+              <h2
+                id="events-heading"
+                className="mt-0.5 font-heading text-2xl text-primary-dark sm:text-3xl"
+              >
                 {t(lang, "eventsHeading")}
               </h2>
             </div>
-            <span className="h-px w-12 bg-gradient-to-l from-transparent via-gold-line to-gold" aria-hidden="true" />
+            <span
+              className="h-px w-12 bg-gradient-to-l from-transparent via-gold-line to-gold"
+              aria-hidden="true"
+            />
           </div>
 
           {/* Interactive Sticky Focal Node Itinerary Timeline */}
@@ -196,7 +208,10 @@ export function InvitationView({
                 <span className="text-xs font-semibold tracking-[0.2em] uppercase text-gold-deep">
                   {isHi ? "महत्वपूर्ण जानकारी" : "Helpful Information"}
                 </span>
-                <h2 id="faq-heading" className="mt-0.5 text-center font-heading text-2xl text-primary-dark sm:text-3xl">
+                <h2
+                  id="faq-heading"
+                  className="mt-0.5 text-center font-heading text-2xl text-primary-dark sm:text-3xl"
+                >
                   {t(lang, "faqHeading")}
                 </h2>
               </div>
@@ -208,7 +223,7 @@ export function InvitationView({
         )}
 
         {/* 6. SACRED MEMORIES / PHOTO GALLERY */}
-        <Reveal as="section" aria-label={isHi ? "पावन स्मृतियाँ" : "Sacred Memories in Kashi"}>
+        <Reveal as="section" aria-label={isHi ? "पावन स्मृतियाँ" : "Sacred Memories"}>
           <PhotoGallery items={content.gallery} lang={lang} />
         </Reveal>
 
@@ -230,11 +245,23 @@ export function InvitationView({
 
           {/* Floating river diyas row */}
           <div className="my-4 flex items-center justify-center gap-5" aria-hidden="true">
-            <span className="float-diya text-lg drop-shadow-[0_2px_6px_rgba(201,162,39,0.5)]">🪔</span>
+            <span className="float-diya text-lg drop-shadow-[0_2px_6px_rgba(201,162,39,0.5)]">
+              🪔
+            </span>
             <span className="h-px w-16 bg-gradient-to-r from-transparent via-gold-line to-gold" />
-            <span className="float-diya text-xl drop-shadow-[0_2px_8px_rgba(201,162,39,0.6)]" style={{ animationDelay: "1.2s" }}>🪔</span>
+            <span
+              className="float-diya text-xl drop-shadow-[0_2px_8px_rgba(201,162,39,0.6)]"
+              style={{ animationDelay: "1.2s" }}
+            >
+              🪔
+            </span>
             <span className="h-px w-16 bg-gradient-to-l from-transparent via-gold-line to-gold" />
-            <span className="float-diya text-lg drop-shadow-[0_2px_6px_rgba(201,162,39,0.5)]" style={{ animationDelay: "2.4s" }}>🪔</span>
+            <span
+              className="float-diya text-lg drop-shadow-[0_2px_6px_rgba(201,162,39,0.5)]"
+              style={{ animationDelay: "2.4s" }}
+            >
+              🪔
+            </span>
           </div>
 
           <p className="font-devanagari text-xs font-semibold tracking-[0.25em] uppercase text-gold-deep sm:text-sm">
@@ -244,11 +271,12 @@ export function InvitationView({
           </p>
 
           <p className="mt-4 text-xs tracking-wider text-ink-muted/80">
-            {isHi ? "सादर उपस्थिति एवं शुभाशीष की प्रतीक्षा में" : "Looking forward to celebrating this sacred beginning with you"}
+            {isHi
+              ? "सादर उपस्थिति एवं शुभाशीष की प्रतीक्षा में"
+              : "Looking forward to celebrating this sacred beginning with you"}
           </p>
         </footer>
       </main>
     </div>
   );
 }
-

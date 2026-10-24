@@ -50,7 +50,7 @@ export function PhotoGallery({ items, lang }: PhotoGalleryProps) {
   if (visibleItems.length === 0) {
     return (
       <section
-        aria-label={isHi ? "पावन स्मृतियाँ" : "Sacred Memories in Kashi"}
+        aria-label={isHi ? "पावन स्मृतियाँ" : "Sacred Memories"}
         className="card-glass-ornate gold-shimmer-sweep relative overflow-hidden rounded-2xl p-8 text-center sm:p-10"
       >
         <div className="pointer-events-none absolute -top-3 -left-3 h-12 w-12 opacity-35">
@@ -66,7 +66,7 @@ export function PhotoGallery({ items, lang }: PhotoGalleryProps) {
             className="pulse-glint mx-auto h-12 w-28 text-gold drop-shadow-[0_2px_8px_rgba(201,162,39,0.35)]"
           />
           <h3 className="mt-4 font-heading text-2xl text-primary-dark sm:text-3xl">
-            {isHi ? "पावन स्मृतियाँ • काशी" : "Sacred Memories in Kashi"}
+            {isHi ? "पावन स्मृतियाँ" : "Sacred Memories"}
           </h3>
           <p className="mt-2 max-w-md text-sm leading-relaxed text-ink-muted">
             {isHi
@@ -87,7 +87,10 @@ export function PhotoGallery({ items, lang }: PhotoGalleryProps) {
     >
       {/* Section Header */}
       <div className="mb-8 flex items-center justify-center gap-3 text-center">
-        <span className="h-px w-12 bg-gradient-to-r from-transparent via-gold-line to-gold" aria-hidden="true" />
+        <span
+          className="h-px w-12 bg-gradient-to-r from-transparent via-gold-line to-gold"
+          aria-hidden="true"
+        />
         <div className="flex flex-col items-center">
           <span className="text-xs font-semibold tracking-[0.2em] uppercase text-gold-deep">
             {isHi ? "पावन स्मृतियाँ" : "Sacred Memories"}
@@ -96,7 +99,10 @@ export function PhotoGallery({ items, lang }: PhotoGalleryProps) {
             {isHi ? "पावन स्मृतियाँ • काशी" : "Sacred Memories in Kashi"}
           </h2>
         </div>
-        <span className="h-px w-12 bg-gradient-to-l from-transparent via-gold-line to-gold" aria-hidden="true" />
+        <span
+          className="h-px w-12 bg-gradient-to-l from-transparent via-gold-line to-gold"
+          aria-hidden="true"
+        />
       </div>
 
       {/* Photo Gallery Grid */}

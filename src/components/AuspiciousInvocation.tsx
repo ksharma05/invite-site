@@ -36,7 +36,10 @@ export function AuspiciousInvocation({ lang }: { lang: Lang }) {
       <div className="relative z-10 flex flex-col items-center">
         {/* Sacred Living Video Window */}
         <div className="relative mb-4 flex items-center justify-center">
-          <span className="gold-glow-pulse absolute -inset-3 rounded-full bg-gradient-to-r from-gold/25 via-gold-bright/40 to-gold/25 blur-lg" aria-hidden="true" />
+          <span
+            className="gold-glow-pulse absolute -inset-3 rounded-full bg-gradient-to-r from-gold/25 via-gold-bright/40 to-gold/25 blur-lg"
+            aria-hidden="true"
+          />
           <div className="relative h-44 w-44 sm:h-52 sm:w-52 overflow-hidden rounded-full border-2 border-gold-bright bg-black shadow-[0_0_24px_rgba(201,162,39,0.45)]">
             <AdaptiveSectionVideo
               src="/videos/ganesha-invocation.mp4"
@@ -77,7 +80,10 @@ export function AuspiciousInvocation({ lang }: { lang: Lang }) {
       {/* --- SHIV-PARVATI BLESSING (KASHI VISHWANATH & ANNAPURNA) --- */}
       <div className="relative z-10 flex flex-col items-center">
         <div className="relative mb-2 flex items-center justify-center">
-          <span className="gold-glow-pulse absolute -inset-2.5 rounded-full bg-gradient-to-r from-accent/20 via-gold-bright/30 to-accent/20 blur-md" aria-hidden="true" />
+          <span
+            className="gold-glow-pulse absolute -inset-2.5 rounded-full bg-gradient-to-r from-accent/20 via-gold-bright/30 to-accent/20 blur-md"
+            aria-hidden="true"
+          />
           <Ornament
             name="shiv-parvati-motif"
             className="relative h-16 w-16 text-gold drop-shadow-[0_4px_10px_rgba(201,162,39,0.4)] transition-transform duration-500 hover:scale-105 sm:h-20 sm:w-20"

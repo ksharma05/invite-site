@@ -42,7 +42,10 @@ export function NavigationHeader({ lang, side }: NavigationHeaderProps) {
         href={buildHref({ lang })}
         className="group inline-flex items-center gap-1.5 text-xs font-semibold tracking-wide text-gold-bright transition-colors hover:text-white sm:text-sm"
       >
-        <span className="transition-transform duration-200 group-hover:-translate-x-1" aria-hidden="true">
+        <span
+          className="transition-transform duration-200 group-hover:-translate-x-1"
+          aria-hidden="true"
+        >
           ←
         </span>
         <span>{t(lang, "switchSide")}</span>

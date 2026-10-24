@@ -1,6 +1,6 @@
 /**
  * Configurable Device Heuristics Thresholds
- * 
+ *
  * Adjust these values to tune the threshold between high-performance
  * devices (which get ambient motion and scroll parallax) and low-tier /
  * legacy devices (which get safe, view-triggered, non-scrubbed video playback).

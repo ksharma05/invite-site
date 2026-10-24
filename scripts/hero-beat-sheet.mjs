@@ -82,8 +82,12 @@ function parseArgs(argv) {
       continue;
     }
     switch (key) {
-      case "--url": opts.url = String(val); break;
-      case "--selector": opts.selector = String(val); break;
+      case "--url":
+        opts.url = String(val);
+        break;
+      case "--selector":
+        opts.selector = String(val);
+        break;
       case "--times":
         opts.times = String(val)
           .split(",")
@@ -91,17 +95,38 @@ function parseArgs(argv) {
           .filter(Boolean)
           .map((s) => Number(s));
         break;
-      case "--beats": opts.beats = Number(val); break;
-      case "--step": opts.step = Number(val); break;
-      case "--width": opts.width = Number(val); break;
-      case "--height": opts.height = Number(val); break;
-      case "--out": opts.out = resolve(String(val)); break;
-      case "--cols": opts.cols = Number(val); break;
-      case "--cell-w": opts.cellW = Number(val); break;
-      case "--no-fallback": opts.useFallback = false; break;
-      case "--require-seek": opts.requireSeek = true; break;
-      case "--leave-frames": opts.leaveFrames = true; break;
-      case "--help": return { help: true, opts };
+      case "--beats":
+        opts.beats = Number(val);
+        break;
+      case "--step":
+        opts.step = Number(val);
+        break;
+      case "--width":
+        opts.width = Number(val);
+        break;
+      case "--height":
+        opts.height = Number(val);
+        break;
+      case "--out":
+        opts.out = resolve(String(val));
+        break;
+      case "--cols":
+        opts.cols = Number(val);
+        break;
+      case "--cell-w":
+        opts.cellW = Number(val);
+        break;
+      case "--no-fallback":
+        opts.useFallback = false;
+        break;
+      case "--require-seek":
+        opts.requireSeek = true;
+        break;
+      case "--leave-frames":
+        opts.leaveFrames = true;
+        break;
+      case "--help":
+        return { help: true, opts };
       default:
         if (!flags.has(key)) console.error(`(ignoring unknown flag ${key})`);
     }
@@ -141,7 +166,10 @@ function reachable(url, timeoutMs = 3000) {
 
 function findPython() {
   for (const candidate of ["python", "python3", "py"]) {
-    const probe = spawnSync(candidate, ["-c", "import PIL"], { encoding: "utf8", windowsHide: true });
+    const probe = spawnSync(candidate, ["-c", "import PIL"], {
+      encoding: "utf8",
+      windowsHide: true,
+    });
     if (probe.status === 0) return candidate;
   }
   return null;
@@ -153,7 +181,8 @@ function timeGrid(opts) {
     if (bad.length) throw new Error(`--times contains invalid value(s): ${bad.join(", ")}`);
     return opts.times;
   }
-  if (!Number.isInteger(opts.beats) || opts.beats < 1) throw new Error(`--beats must be a positive integer, got ${opts.beats}`);
+  if (!Number.isInteger(opts.beats) || opts.beats < 1)
+    throw new Error(`--beats must be a positive integer, got ${opts.beats}`);
   if (!(opts.step > 0)) throw new Error(`--step must be > 0, got ${opts.step}`);
   // 0.0, 0.1, ... over the full duration; last beat lands just short of the end.
   return Array.from({ length: opts.beats }, (_, i) => Number((i * opts.step).toFixed(4)));
@@ -256,7 +285,10 @@ async function main() {
     );
   }
   const py = findPython();
-  if (!py) return die(`no Python with Pillow found (tried python, python3, py) - needed to stitch the sheet`);
+  if (!py)
+    return die(
+      `no Python with Pillow found (tried python, python3, py) - needed to stitch the sheet`
+    );
   if (!existsSync(STITCHER)) return die(`missing stitch helper: ${STITCHER}`);
 
   let { chromium } = require("playwright");
@@ -314,7 +346,9 @@ async function main() {
       );
     }
     if (opts.requireSeek && !seeded) {
-      return die("--require-seek set but the page offers no way to scrub time. Nothing was written.");
+      return die(
+        "--require-seek set but the page offers no way to scrub time. Nothing was written."
+      );
     }
 
     frameDir = mkdtempSync(join(tmpdir(), "hero-beat-"));
@@ -335,7 +369,8 @@ async function main() {
         label: `beat ${i + 1}/${times.length}  t=${t.toFixed(2)}s`,
         sub: `anim ${info.wapi}${info.seekHook ? " +seek" : ""}`,
       });
-      if ((i + 1) % 12 === 0 || i === times.length - 1) console.log(`  ... ${i + 1}/${times.length}`);
+      if ((i + 1) % 12 === 0 || i === times.length - 1)
+        console.log(`  ... ${i + 1}/${times.length}`);
     }
   } catch (err) {
     const message = err && err.message ? err.message : String(err);
@@ -348,62 +383,70 @@ async function main() {
     if (browser) await browser.close().catch(() => {});
 
     // --- stitch ------------------------------------------------------------
-  const manifestPath = join(frameDir, "manifest.json");
-  writeFileSync(
-    manifestPath,
-    JSON.stringify(
-      {
-        title: `Hero beat sheet  ${frames.length} beats / ${times[times.length - 1].toFixed(1)}s`,
-        meta: `${opts.url}   selector: ${selector}   viewport ${opts.width}x${opts.height}   reduced-motion: no-preference`,
-        cell_w: opts.cellW,
-        cols: opts.cols,
-        frames,
-      },
-      null,
-      2
-    ),
-    "utf8"
-  );
-
-  const stitch = spawnSync(py, [STITCHER, "--manifest", manifestPath, "--out", opts.out], {
-    encoding: "utf8",
-    cwd: ROOT,
-    windowsHide: true,
-  });
-  if (stitch.stderr) process.stderr.write(stitch.stderr);
-  let sheet = null;
-  try {
-    const out = (stitch.stdout || "").trim();
-    sheet = JSON.parse(out.slice(out.lastIndexOf("{"), out.lastIndexOf("}") + 1));
-  } catch {
-    /* handled below */
-  }
-  if (stitch.status !== 0 || !sheet || !sheet.ok) {
-    if (!opts.leaveFrames && frameDir) rmSync(frameDir, { recursive: true, force: true });
-    return die(
-      `stitching failed (exit ${stitch.status}): ${(sheet && sheet.error) || stitch.stdout || stitch.stderr || "no output"}\n` +
-        `  ${frames.length} frames were captured but no sheet was written.`
+    const manifestPath = join(frameDir, "manifest.json");
+    writeFileSync(
+      manifestPath,
+      JSON.stringify(
+        {
+          title: `Hero beat sheet  ${frames.length} beats / ${times[times.length - 1].toFixed(1)}s`,
+          meta: `${opts.url}   selector: ${selector}   viewport ${opts.width}x${opts.height}   reduced-motion: no-preference`,
+          cell_w: opts.cellW,
+          cols: opts.cols,
+          frames,
+        },
+        null,
+        2
+      ),
+      "utf8"
     );
-  }
 
-  console.log(`\n${"beat sheet".padEnd(22)} ${sheet.dims}  ${sheet.bytes.toLocaleString("en-US")} B`);
-  console.log(`${"frames".padEnd(22)} ${sheet.frames} (${sheet.rows} rows x ${sheet.cols} cols) -> ${sheet.out}`);
-  const sizes = frames.map((f) => (existsSync(f.path) ? statSync(f.path).size : NaN)).filter(Number.isFinite);
-  if (sizes.length) {
-    const uniq = new Set(sizes);
-    console.log(`${"frame bytes".padEnd(22)} min ${Math.min(...sizes).toLocaleString("en-US")} max ${Math.max(...sizes).toLocaleString("en-US")}`);
-    if (uniq.size === 1 && sizes.length > 1) {
-      console.log(
-        "  NOTE: every frame is byte-identical - the animation did not advance between\n" +
-          "        beats. Check the seek hook; this sheet shows the final state only."
+    const stitch = spawnSync(py, [STITCHER, "--manifest", manifestPath, "--out", opts.out], {
+      encoding: "utf8",
+      cwd: ROOT,
+      windowsHide: true,
+    });
+    if (stitch.stderr) process.stderr.write(stitch.stderr);
+    let sheet = null;
+    try {
+      const out = (stitch.stdout || "").trim();
+      sheet = JSON.parse(out.slice(out.lastIndexOf("{"), out.lastIndexOf("}") + 1));
+    } catch {
+      /* handled below */
+    }
+    if (stitch.status !== 0 || !sheet || !sheet.ok) {
+      if (!opts.leaveFrames && frameDir) rmSync(frameDir, { recursive: true, force: true });
+      return die(
+        `stitching failed (exit ${stitch.status}): ${(sheet && sheet.error) || stitch.stdout || stitch.stderr || "no output"}\n` +
+          `  ${frames.length} frames were captured but no sheet was written.`
       );
     }
-  }
-  if (!opts.leaveFrames) {
-    rmSync(frameDir, { recursive: true, force: true });
-  } else {
-    console.log(`${"frames kept".padEnd(22)} ${frameDir}`);
-  }
+
+    console.log(
+      `\n${"beat sheet".padEnd(22)} ${sheet.dims}  ${sheet.bytes.toLocaleString("en-US")} B`
+    );
+    console.log(
+      `${"frames".padEnd(22)} ${sheet.frames} (${sheet.rows} rows x ${sheet.cols} cols) -> ${sheet.out}`
+    );
+    const sizes = frames
+      .map((f) => (existsSync(f.path) ? statSync(f.path).size : NaN))
+      .filter(Number.isFinite);
+    if (sizes.length) {
+      const uniq = new Set(sizes);
+      console.log(
+        `${"frame bytes".padEnd(22)} min ${Math.min(...sizes).toLocaleString("en-US")} max ${Math.max(...sizes).toLocaleString("en-US")}`
+      );
+      if (uniq.size === 1 && sizes.length > 1) {
+        console.log(
+          "  NOTE: every frame is byte-identical - the animation did not advance between\n" +
+            "        beats. Check the seek hook; this sheet shows the final state only."
+        );
+      }
+    }
+    if (!opts.leaveFrames) {
+      rmSync(frameDir, { recursive: true, force: true });
+    } else {
+      console.log(`${"frames kept".padEnd(22)} ${frameDir}`);
+    }
     console.log(`\nOK - reviewed sheet at ${resolve(opts.out)}`);
     return 0;
   } finally {
@@ -417,6 +460,8 @@ main()
     if (code) process.exitCode = code;
   })
   .catch((err) => {
-    console.error(`\nHERO-BEAT-SHEET FAILED\nunexpected error: ${err && err.stack ? err.stack : err}`);
+    console.error(
+      `\nHERO-BEAT-SHEET FAILED\nunexpected error: ${err && err.stack ? err.stack : err}`
+    );
     process.exitCode = 1;
   });

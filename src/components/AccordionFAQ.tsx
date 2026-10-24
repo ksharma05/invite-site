@@ -35,7 +35,9 @@ export function AccordionFAQ({ faqs, lang }: AccordionFAQProps) {
               aria-expanded={isOpen}
             >
               <span className="flex items-center gap-3 font-heading text-lg font-medium text-ink sm:text-xl">
-                <span className={`text-sm transition-transform duration-300 ${isOpen ? "text-gold rotate-45" : "text-gold-deep"}`}>
+                <span
+                  className={`text-sm transition-transform duration-300 ${isOpen ? "text-gold rotate-45" : "text-gold-deep"}`}
+                >
                   ✦
                 </span>
                 <span lang={lang}>{faq.question[lang]}</span>
@@ -66,7 +68,10 @@ export function AccordionFAQ({ faqs, lang }: AccordionFAQProps) {
               }`}
             >
               <div className="overflow-hidden">
-                <div className="border-t border-gold-line/40 px-5 pt-3.5 pb-5 text-sm leading-relaxed text-ink-muted sm:px-6 sm:pb-6" lang={lang}>
+                <div
+                  className="border-t border-gold-line/40 px-5 pt-3.5 pb-5 text-sm leading-relaxed text-ink-muted sm:px-6 sm:pb-6"
+                  lang={lang}
+                >
                   {faq.answer[lang]}
                 </div>
               </div>

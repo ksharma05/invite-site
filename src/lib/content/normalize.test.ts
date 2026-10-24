@@ -86,7 +86,9 @@ describe("rowsToObjects", () => {
 describe("resolveImageUrl", () => {
   it("converts Google Drive file/d share links to lh3 CDN URLs", () => {
     const url = "https://drive.google.com/file/d/1AbCdEfGhIjKlMnOpQrStUvWxYz/view?usp=sharing";
-    expect(resolveImageUrl(url)).toBe("https://lh3.googleusercontent.com/d/1AbCdEfGhIjKlMnOpQrStUvWxYz");
+    expect(resolveImageUrl(url)).toBe(
+      "https://lh3.googleusercontent.com/d/1AbCdEfGhIjKlMnOpQrStUvWxYz"
+    );
   });
 
   it("converts Google Drive open?id links to lh3 CDN URLs", () => {

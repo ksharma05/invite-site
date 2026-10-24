@@ -1,10 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  DEFAULT_HEURISTICS_CONFIG,
-  type DeviceHeuristicsConfig,
-} from "@/config/deviceHeuristics";
+import { DEFAULT_HEURISTICS_CONFIG, type DeviceHeuristicsConfig } from "@/config/deviceHeuristics";
 
 export type DeviceTier = "high" | "low";
 
@@ -20,9 +17,7 @@ export interface DeviceTierResult {
  * Returns 'low' tier for older, low-memory, or constrained devices to prevent crashes
  * and guarantee 60fps playback without scroll lag.
  */
-export function useDeviceTier(
-  customConfig?: Partial<DeviceHeuristicsConfig>
-): DeviceTierResult {
+export function useDeviceTier(customConfig?: Partial<DeviceHeuristicsConfig>): DeviceTierResult {
   const config = { ...DEFAULT_HEURISTICS_CONFIG, ...customConfig };
 
   const [result, setResult] = useState<DeviceTierResult>({
@@ -132,8 +127,7 @@ export function useDeviceTier(
     // 6. GPU Check: WebGL max texture size limit for legacy chipsets
     try {
       const canvas = document.createElement("canvas");
-      const gl =
-        canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+      const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
       if (gl) {
         const glCtx = gl as WebGLRenderingContext;
         const maxTextureSize = glCtx.getParameter(glCtx.MAX_TEXTURE_SIZE);

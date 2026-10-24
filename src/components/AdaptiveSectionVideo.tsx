@@ -19,7 +19,7 @@ export interface AdaptiveSectionVideoProps {
 
 /**
  * AdaptiveSectionVideo
- * 
+ *
  * Plays only when scrolled into the viewport.
  * When `playOnce` is true (default), each video plays exactly once through its duration
  * and permanently locks on its final resting frame.
@@ -142,10 +142,7 @@ export function AdaptiveSectionVideo({
       : undefined;
 
   return (
-    <div
-      ref={containerRef}
-      className={`relative overflow-hidden ${className}`}
-    >
+    <div ref={containerRef} className={`relative overflow-hidden ${className}`}>
       <video
         ref={videoRef}
         src={src}
@@ -165,9 +162,7 @@ export function AdaptiveSectionVideo({
 
       {/* Optional gradient readability overlay */}
       {overlayGradient && (
-        <div
-          className={`absolute inset-0 pointer-events-none ${overlayGradient}`}
-        />
+        <div className={`absolute inset-0 pointer-events-none ${overlayGradient}`} />
       )}
 
       {/* Content slot */}

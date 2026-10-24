@@ -22,12 +22,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const WORKER = join(ROOT, "scripts", "stage_assets_worker.py");
-const DEFAULT_SOURCE = join(
-  ROOT,
-  ".abacusai",
-  "temp",
-  "b4b8e0b4-2d14-4c85-991e-11607cfb73bc.png"
-);
+const DEFAULT_SOURCE = join(ROOT, ".abacusai", "temp", "b4b8e0b4-2d14-4c85-991e-11607cfb73bc.png");
 const OUT_DIR = join(ROOT, "public", "hero");
 const BUDGET_KB = 60;
 const FORMATS = [
@@ -311,9 +306,7 @@ console.log(
     `all budgeted formats <= ${BUDGET_KB} KB.`
 );
 if ((result.per_size || []).some((s) => s.upscale_factor > 1.2)) {
-  const worstSize = result.per_size.reduce((a, b) =>
-    b.upscale_factor > a.upscale_factor ? b : a
-  );
+  const worstSize = result.per_size.reduce((a, b) => (b.upscale_factor > a.upscale_factor ? b : a));
   console.log(
     `note: largest tile is a ${worstSize.upscale_factor}x upscale of the cropped paper - fibre ` +
       `detail will be softer than a photo where the sheet fills the frame`

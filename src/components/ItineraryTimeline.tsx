@@ -154,9 +154,7 @@ export function ItineraryTimeline({ events, lang }: ItineraryTimelineProps) {
           {/* Medallion Circle */}
           <div
             className={`relative flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full border-2 border-gold-bright bg-[#fffdf9] dark:bg-[#1a120c] shadow-[0_0_20px_rgba(201,162,39,0.45)] transition-all duration-300 ${
-              isTransitioning
-                ? "scale-110 shadow-[0_0_28px_rgba(212,175,55,0.7)]"
-                : "scale-100"
+              isTransitioning ? "scale-110 shadow-[0_0_28px_rgba(212,175,55,0.7)]" : "scale-100"
             }`}
           >
             {/* Specular Shimmer Sweep */}
@@ -168,9 +166,7 @@ export function ItineraryTimeline({ events, lang }: ItineraryTimelineProps) {
             {/* Dynamic Event Motif with Crossfade/Scale Transition */}
             <div
               className={`flex items-center justify-center transition-all duration-300 ease-out ${
-                isTransitioning
-                  ? "opacity-0 scale-75 rotate-12"
-                  : "opacity-100 scale-100 rotate-0"
+                isTransitioning ? "opacity-0 scale-75 rotate-12" : "opacity-100 scale-100 rotate-0"
               }`}
             >
               {activeEvent?.title && (
@@ -244,9 +240,7 @@ export function ItineraryTimeline({ events, lang }: ItineraryTimelineProps) {
                     <div className="flex items-center gap-3">
                       <h3
                         className={`font-heading text-2xl font-medium transition-colors duration-200 sm:text-3xl ${
-                          isActive
-                            ? "text-primary-dark"
-                            : "text-ink group-hover:text-primary-dark"
+                          isActive ? "text-primary-dark" : "text-ink group-hover:text-primary-dark"
                         }`}
                         lang={lang}
                       >
@@ -313,9 +307,7 @@ export function ItineraryTimeline({ events, lang }: ItineraryTimelineProps) {
                 {/* Optional Dress Code */}
                 {event.dressCode && (
                   <div className="mt-4 flex items-center gap-2 border-t border-border/50 pt-3 text-xs uppercase tracking-wider text-ink-muted">
-                    <span className="font-semibold text-gold-deep">
-                      {t(lang, "dressCode")}:
-                    </span>
+                    <span className="font-semibold text-gold-deep">{t(lang, "dressCode")}:</span>
                     <span className="rounded-full border border-gold-line bg-accent/15 px-3 py-0.5 font-semibold text-accent shadow-sm">
                       {event.dressCode[lang]}
                     </span>

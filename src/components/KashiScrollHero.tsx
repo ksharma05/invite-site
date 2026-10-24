@@ -234,7 +234,9 @@ export function KashiScrollHero({
               {/* Sacred Lotus Fleuron Divider */}
               <div className="my-2 flex items-center justify-center gap-3" aria-hidden="true">
                 <span className="h-px w-8 sm:w-10 bg-gold-bright/50" />
-                <span className="font-heading text-xl sm:text-2xl text-gold-bright">{"\u2766"}</span>
+                <span className="font-heading text-xl sm:text-2xl text-gold-bright">
+                  {"\u2766"}
+                </span>
                 <span className="h-px w-8 sm:w-10 bg-gold-bright/50" />
               </div>
 
