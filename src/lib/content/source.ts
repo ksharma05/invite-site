@@ -51,6 +51,15 @@ export async function getInvitationContent(): Promise<ContentResult> {
       return { kind: "ok", content: snapshot, servedFrom: "snapshot" };
     }
 
+    // Outage/first-boot fallback: if fixtures are allowed, serve them rather than a blank page.
+    if (env.ALLOW_FIXTURE_CONTENT) {
+      console.warn(`[sheets] ${candidate.reason}: falling back to fixture content.`);
+      const parsed = invitationContentSchema.safeParse(fixtureContent);
+      if (parsed.success) {
+        return { kind: "ok", content: parsed.data, servedFrom: "fixture" };
+      }
+    }
+
     // No snapshot and the sheet is unusable — show an honest unavailable state.
     return { kind: "unavailable", reason: "sheets-unavailable" };
   }
