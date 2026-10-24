@@ -251,13 +251,6 @@ export function KashiScrollHero({
                   {blessing}
                 </p>
               )}
-
-              {/* City of Kashi Welcome Subtitle */}
-              <p className="mt-4 text-xs font-light tracking-widest uppercase text-white/90">
-                {isHi
-                  ? "काशी विश्वनाथ की पावन नगरी में आपका स्वागत है"
-                  : "Welcoming You to the Eternal City of Kashi"}
-              </p>
             </div>
 
             {/* Elegant Downward Scroll Indicator */}
