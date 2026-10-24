@@ -82,7 +82,7 @@ export function PhotoGallery({ items, lang }: PhotoGalleryProps) {
 
   return (
     <section
-      aria-label={isHi ? "पावन स्मृतियाँ" : "Sacred Memories in Kashi"}
+      aria-label={isHi ? "पावन स्मृतियाँ" : "Sacred Memories"}
       className="relative flex flex-col items-center"
     >
       {/* Section Header */}
@@ -91,14 +91,9 @@ export function PhotoGallery({ items, lang }: PhotoGalleryProps) {
           className="h-px w-12 bg-gradient-to-r from-transparent via-gold-line to-gold"
           aria-hidden="true"
         />
-        <div className="flex flex-col items-center">
-          <span className="text-xs font-semibold tracking-[0.2em] uppercase text-gold-deep">
-            {isHi ? "पावन स्मृतियाँ" : "Sacred Memories"}
-          </span>
-          <h2 className="mt-0.5 font-heading text-2xl text-primary-dark sm:text-3xl">
-            {isHi ? "पावन स्मृतियाँ • काशी" : "Sacred Memories in Kashi"}
-          </h2>
-        </div>
+        <h2 className="font-heading text-2xl text-primary-dark sm:text-3xl">
+          {isHi ? "पावन स्मृतियाँ" : "Sacred Memories"}
+        </h2>
         <span
           className="h-px w-12 bg-gradient-to-l from-transparent via-gold-line to-gold"
           aria-hidden="true"

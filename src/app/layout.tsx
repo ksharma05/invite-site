@@ -25,9 +25,43 @@ const devanagariFont = Noto_Serif_Devanagari({
   display: "swap",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
+  ? process.env.NEXT_PUBLIC_SITE_URL
+  : process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "https://sanjukta-khushal.wedding";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: "Sanjukta & Khushal — Wedding Invitation",
-  description: "You are cordially invited to the wedding of Sanjukta and Khushal.",
+  description:
+    "Together with our families, we cordially invite you to celebrate our wedding in Varanasi (Kashi). 23–25 November 2026.",
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    siteName: "Sanjukta & Khushal Wedding",
+    title: "Sanjukta & Khushal — Wedding Invitation",
+    description:
+      "Together with our families, we cordially invite you to celebrate our wedding in Varanasi (Kashi). 23–25 November 2026.",
+    images: [
+      {
+        url: "/og-card-1200x630.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Sanjukta & Khushal Wedding Invitation",
+        type: "image/jpeg",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Sanjukta & Khushal — Wedding Invitation",
+    description:
+      "Together with our families, we cordially invite you to celebrate our wedding in Varanasi (Kashi). 23–25 November 2026.",
+    images: ["/og-card-1200x630.jpg"],
+  },
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

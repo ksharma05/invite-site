@@ -178,17 +178,9 @@ export function InvitationView({
               className="h-px w-12 bg-gradient-to-r from-transparent via-gold-line to-gold"
               aria-hidden="true"
             />
-            <div className="flex flex-col items-center">
-              <span className="text-xs font-semibold tracking-[0.2em] uppercase text-gold-deep">
-                {isHi ? "मांगलिक उत्सव" : "Ceremonial Journey"}
-              </span>
-              <h2
-                id="events-heading"
-                className="mt-0.5 font-heading text-2xl text-primary-dark sm:text-3xl"
-              >
-                {t(lang, "eventsHeading")}
-              </h2>
-            </div>
+            <h2 id="events-heading" className="font-heading text-2xl text-primary-dark sm:text-3xl">
+              {t(lang, "eventsHeading")}
+            </h2>
             <span
               className="h-px w-12 bg-gradient-to-l from-transparent via-gold-line to-gold"
               aria-hidden="true"
@@ -240,7 +232,7 @@ export function InvitationView({
           />
 
           <p className="font-heading text-3xl font-semibold text-primary-dark sm:text-4xl">
-            {isHi ? "संजुक्ता एवं खुशाल" : "Sanjukta & Khushal"}
+            {formatName(primaryName, lang)} {isHi ? "एवं" : "&"} {formatName(secondaryName, lang)}
           </p>
 
           {/* Floating river diyas row */}

@@ -20,7 +20,7 @@ export const dictionary = {
     musicLabel: "Background music",
     hostedBy: "Hosted by",
     withOurFamilies: "With our families",
-    eventsHeading: "Celebration itinerary",
+    eventsHeading: "Celebration Itinerary",
     venueHeading: "Venue & travel",
     contactHeading: "Contact",
     viewOnMap: "View on map",
