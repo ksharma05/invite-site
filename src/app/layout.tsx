@@ -37,14 +37,14 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: "Sanjukta & Khushal — Wedding Invitation",
   description:
-    "Together with our families, we cordially invite you to celebrate our wedding in Varanasi (Kashi). 23–25 November 2026.",
+    "Together with our families, we cordially invite you to celebrate our wedding. 23–25 November 2026.",
   openGraph: {
     type: "website",
     locale: "en_IN",
     siteName: "Sanjukta & Khushal Wedding",
     title: "Sanjukta & Khushal — Wedding Invitation",
     description:
-      "Together with our families, we cordially invite you to celebrate our wedding in Varanasi (Kashi). 23–25 November 2026.",
+      "Together with our families, we cordially invite you to celebrate our wedding. 23–25 November 2026.",
     images: [
       {
         url: "/og-card-1200x630.jpg",
@@ -59,7 +59,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Sanjukta & Khushal — Wedding Invitation",
     description:
-      "Together with our families, we cordially invite you to celebrate our wedding in Varanasi (Kashi). 23–25 November 2026.",
+      "Together with our families, we cordially invite you to celebrate our wedding. 23–25 November 2026.",
     images: ["/og-card-1200x630.jpg"],
   },
 };

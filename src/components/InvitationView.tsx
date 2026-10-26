@@ -15,7 +15,12 @@ import { resolveCountdownTarget } from "@/lib/invitation/resolveCountdownTarget"
 
 function formatName(name: PersonName, lang: Lang): string {
   const honorific = lang === "hi" ? name.honorificHi : name.honorificEn;
-  const value = lang === "hi" ? name.hi : name.en;
+  const rawValue = lang === "hi" ? name.hi : name.en;
+  const value =
+    lang === "hi" &&
+    (rawValue === "सजुक्ता" || (name.en.toLowerCase() === "sanjukta" && rawValue === "सजुक्ता"))
+      ? "संजुक्ता"
+      : rawValue;
   return honorific ? `${honorific} ${value}` : value;
 }
 
@@ -78,42 +83,108 @@ export function InvitationView({
         {/* 2. HOST FAMILY INVITATION CARD */}
         <Reveal
           as="section"
-          className="card-glass-ornate gold-shimmer-sweep relative overflow-hidden rounded-2xl p-6 text-center sm:p-10"
+          className="relative overflow-hidden rounded-2xl py-7 px-4 xs:px-6 text-center sm:py-10 sm:px-10 border border-gold-bright/40 shadow-[0_20px_50px_rgba(70,14,20,0.45)]"
           aria-labelledby="host-heading"
         >
-          {/* 4 Corner decorative flourishes */}
-          <div className="pointer-events-none absolute -top-3 -left-3 h-14 w-14 opacity-40">
-            <Ornament name="paisley-corner" className="h-full w-full text-gold" />
-          </div>
-          <div className="pointer-events-none absolute -top-3 -right-3 h-14 w-14 rotate-90 opacity-40">
-            <Ornament name="paisley-corner" className="h-full w-full text-gold" />
-          </div>
-          <div className="pointer-events-none absolute -bottom-3 -left-3 h-14 w-14 -rotate-90 opacity-35">
-            <Ornament name="paisley-corner" className="h-full w-full text-gold" />
-          </div>
-          <div className="pointer-events-none absolute -bottom-3 -right-3 h-14 w-14 rotate-180 opacity-35">
-            <Ornament name="paisley-corner" className="h-full w-full text-gold" />
+          {/* Authentic Royal Crimson Banarasi Silk & Gold Brocade Background */}
+          <div
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url('/ornaments/banarasi-card-bg.webp')` }}
+            aria-hidden="true"
+          />
+
+          {/* Subtle Warm Vignette Overlay & Soft Radial Backplate for crystal-clear mobile contrast */}
+          <div
+            className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/20 to-black/45 pointer-events-none"
+            aria-hidden="true"
+          />
+          <div
+            className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(25,3,6,0.45)_0%,_rgba(35,4,8,0.25)_55%,_transparent_100%)] pointer-events-none"
+            aria-hidden="true"
+          />
+
+          {/* Physical "Embossed Card" Inset Dual Border */}
+          <div
+            className="pointer-events-none absolute inset-2.5 rounded-xl border border-gold-bright/35 sm:inset-4"
+            aria-hidden="true"
+          >
+            {/* Subtle inner gold hairline frame */}
+            <div className="absolute inset-1 rounded-lg border border-gold-bright/20" />
           </div>
 
-          <div className="relative z-10 flex flex-col items-center">
-            <Ornament name="lotus-emblem" className="mb-4 h-6 w-14 text-gold-deep" />
+          <div className="relative z-10 flex flex-col items-center w-full max-w-[250px] xs:max-w-[280px] sm:max-w-[390px] mx-auto">
+            <Ornament
+              name="lotus-emblem"
+              className="mb-3 h-5 w-12 sm:mb-4 sm:h-6 sm:w-14 text-gold-bright drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]"
+            />
 
             <h2 id="host-heading" className="sr-only">
               {t(lang, "hostedBy")}
             </h2>
-            <p className="font-body text-lg leading-relaxed text-ink sm:text-xl" lang={lang}>
-              {wording[lang]}
-            </p>
 
-            <div className="mt-7 w-full space-y-2 border-t border-gold-line/60 pt-6 text-sm text-ink-muted">
-              <p className="text-base font-semibold text-ink">
-                <span className="text-gold-deep">{t(lang, "hostedBy")}:</span>{" "}
+            {/* Host Invitation Body */}
+            <div className="flex flex-col items-center text-center w-full">
+              {/* Host Parents */}
+              <p className="text-xs sm:text-base font-semibold text-amber-50 drop-shadow-[0_1px_3px_rgba(0,0,0,0.95)] leading-snug tracking-wide text-balance">
+                {hostParents.map((p) => formatName(p, lang)).join(isHi ? " एवं " : " and ")}
+              </p>
+
+              {/* Relationship & Invitation Phrase */}
+              <p className="mt-1 text-[11px] sm:text-sm text-amber-100/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] leading-normal tracking-wide text-balance">
+                {isHi
+                  ? side === "bride"
+                    ? "अपनी सुपुत्री"
+                    : "अपने सुपुत्र"
+                  : side === "bride"
+                    ? "cordially invite you to the wedding of their daughter"
+                    : "cordially invite you to the wedding of their son"}
+              </p>
+
+              {/* Primary Couple Name on its own individual line */}
+              <p className="mt-2.5 sm:mt-3 font-heading text-2xl sm:text-4xl md:text-5xl font-semibold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-100 via-gold-bright to-amber-200 drop-shadow-[0_2px_8px_rgba(0,0,0,0.98)] leading-tight">
+                {formatName(primaryName, lang)}
+              </p>
+
+              {/* Ornamental Connector */}
+              <div
+                className="my-1 sm:my-1.5 flex items-center justify-center gap-2 sm:gap-3"
+                aria-hidden="true"
+              >
+                <span className="h-px w-6 sm:w-12 bg-gradient-to-r from-transparent via-gold-bright to-gold opacity-80" />
+                <span className="font-heading text-xs sm:text-base font-normal italic text-amber-200 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
+                  {isHi ? "संग" : "with"}
+                </span>
+                <span className="h-px w-6 sm:w-12 bg-gradient-to-l from-transparent via-gold-bright to-gold opacity-80" />
+              </div>
+
+              {/* Secondary Couple Name on its own individual line */}
+              <p className="font-heading text-2xl sm:text-4xl md:text-5xl font-semibold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-amber-100 via-gold-bright to-amber-200 drop-shadow-[0_2px_8px_rgba(0,0,0,0.98)] leading-tight">
+                {formatName(secondaryName, lang)}
+              </p>
+
+              {/* Hindi ceremonial closing */}
+              {isHi && (
+                <p className="mt-1.5 text-[11px] sm:text-sm text-amber-100/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] leading-normal text-balance">
+                  के पावन विवाह में आपको सादर आमंत्रित करते हैं।
+                </p>
+              )}
+
+              {/* With our families */}
+              <p className="mt-3.5 sm:mt-5 text-[11px] sm:text-sm text-amber-100/90 leading-relaxed text-balance">
+                <span className="font-medium text-amber-200/90 drop-shadow">
+                  {t(lang, "withOurFamilies")}:
+                </span>{" "}
+                <span className="font-semibold text-amber-50 drop-shadow-[0_1px_3px_rgba(0,0,0,0.95)]">
+                  {otherParents.map((p) => formatName(p, lang)).join(isHi ? " एवं " : " and ")}
+                </span>
+              </p>
+            </div>
+
+            <div className="mt-5 sm:mt-7 w-full space-y-1.5 border-t border-gold-bright/35 pt-4 sm:pt-6 text-[11px] sm:text-sm text-amber-100/80">
+              <p className="text-xs sm:text-base font-semibold text-amber-50 drop-shadow-[0_1px_3px_rgba(0,0,0,0.95)] text-balance">
+                <span className="text-amber-200/90 font-medium">{t(lang, "hostedBy")}:</span>{" "}
                 {hostParents.map((p) => formatName(p, lang)).join(" & ")}
               </p>
-              {/* <p className="text-sm">
-                <span className="font-medium text-ink">{t(lang, "withOurFamilies")}:</span>{" "}
-                {otherParents.map((p) => formatName(p, lang)).join(" & ")}
-              </p> */}
             </div>
           </div>
         </Reveal>
@@ -162,9 +233,6 @@ export function InvitationView({
                 overlayGradient="bg-gradient-to-t from-black/80 via-black/25 to-black/30"
               >
                 <div className="absolute inset-0 flex flex-col items-center justify-end pb-4 px-4 text-center text-white">
-                  {/* <span className="font-devanagari text-[11px] font-medium uppercase tracking-[0.25em] text-gold-bright drop-shadow">
-                    {isHi ? "काशी की पावन धरा" : "The Sacred Ghats of Kashi"}
-                  </span> */}
                   <p className="mt-0.5 font-heading text-lg sm:text-2xl font-light text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)]">
                     {isHi ? "मांगलिक उत्सव यात्रा" : "Ceremonial Celebration"}
                   </p>
@@ -258,8 +326,8 @@ export function InvitationView({
 
           <p className="font-devanagari text-xs font-semibold tracking-[0.25em] uppercase text-gold-deep sm:text-sm">
             {isHi
-              ? "काशी विश्वनाथ की असीम कृपा से परिणय सूत्र"
-              : "Bound in Love with the Grace of Kashi Vishwanath"}
+              ? "ईश्वर की असीम कृपा से परिणय सूत्र"
+              : "Bound in Love with Divine Grace & Blessings"}
           </p>
 
           <p className="mt-4 text-xs tracking-wider text-ink-muted/80">

@@ -96,8 +96,8 @@ export function AuspiciousInvocation({ lang }: { lang: Lang }) {
 
         <p className="mt-1 font-devanagari text-xs font-semibold tracking-[0.18em] text-accent sm:text-sm">
           {isHi
-            ? "काशी विश्वनाथ एवं माँ अन्नपूर्णा की असीम कृपा"
-            : "With the divine blessings of Kashi Vishwanath & Maa Annapurna"}
+            ? "भगवान शिव एवं माता पार्वती की असीम कृपा"
+            : "With the divine blessings of Lord Shiva & Mata Parvati"}
         </p>
 
         {/* Sacred Karpura Gauram Shloka */}

@@ -24,6 +24,7 @@ be treated as resolved by any fixture, copy, or styling choice in this repo.
 | Hosting provider                                                  | **Confirmed**                                 | Vercel.                                                                                                                                                                                                                                                                                                                                                                                                                |
 | Google Sheets schema                                              | **Approved by use, revisable**                | Four tabs (`Events`, `Faqs`, `Family`, `Wording`) documented in README "Setting up the Google Sheet". A real spreadsheet has been created with these tabs, connected via a service account, and verified end-to-end (see Phase 5 notes). Column shape can still evolve before family sign-off.                                                                                                                         |
 | Update/refresh freshness policy                                   | **Confirmed**                                 | Server re-fetches at most every `SHEETS_REVALIDATE_SECONDS` (default 60s); edits are not instant. A **critical failure** (unreachable sheet, invalid `Family`/`Wording`) serves the durable last-known-good snapshot if one exists; a single bad optional event/FAQ row is skipped+logged and does **not** block the update (Phase 6). Without a snapshot it shows "unavailable" rather than stale/fabricated content. |
+| Kashi / Varanasi role                                             | **Confirmed**                                 | Visual / atmospheric reference only (cinematic background videos, temple arches, ghat silhouettes). No event takes place in Kashi; no geographic relevance for guests. Forbidden in copy: stating or implying the wedding is in Kashi/Varanasi, or using "The Sacred Ghats of Kashi", "in Kashi", etc.                                                                                                                 |
 | Optional sections (gallery, story, FAQs, accommodation)           | **FAQs: built, conditional.** Others **OPEN** | FAQ section only renders if the `Faqs` tab has active rows — otherwise it is skipped entirely, not shown empty. Gallery/story/accommodation not built.                                                                                                                                                                                                                                                                 |
 
 ## Rule in force
@@ -253,3 +254,36 @@ titleHi)` (pure, unit-tested) maps a ceremony to a motif by stable id, then
   instance, so multiple ornaments on one page never clash on a global SVG id.
   Verified: 0 duplicate ids, 0 orphaned `url(#)` refs, and the ornaments paint
   `#c9a227` foil (~10% gold pixels via PIL on element renders).
+
+- **Mehendi Ceremony Card Theming (Candidate 1B):**
+  - **Asset Choice:** Royal Emerald Silk & Gold Mughal Scalloped Arch with Jaali Lattice (`public/ornaments/mehendi-card-bg.webp`, 284 KB; `.jpg` fallback at 332 KB).
+  - **Framing & Headroom:** `pt-16 sm:pt-24` centers ceremony title neatly beneath the central apex of the Mughal scalloped arch without colliding with the corner jaali spandrels.
+  - **Typography & Contrast:** Shimmering gold gradient headline (`from-amber-100 via-gold-bright to-amber-200`) with strong drop shadow; dark emerald glass date pill badge (`bg-black/45 border-gold-bright/40 text-amber-50`); ivory venue typography (`text-amber-50`); and dark emerald glass action buttons with gold border accents.
+  - **Mobile Boundaries:** Constrained horizontal max-width (`max-w-[275px]` on mobile) prevents overlap with the side embroidered pillars on narrow mobile screens (360px & 390px). Dual hairline border positioned at `inset-1.5` hugs card radius cleanly. Full AAA readability verified across desktop and mobile.
+
+- **Sangeet Ceremony Card Theming (Candidate 2A):**
+  - **Asset Choice:** Imperial Jamuni Silk & Scalloped Mughal Arch with Musical Zari (`public/ornaments/sangeet-card-bg.webp`, 261 KB; `.jpg` fallback at 306 KB).
+  - **Musical Zari Iconography:** Sitar/tanpura and classical tabla pair hand-embroidered on left border, classical veena and cascading ghungroo bells on right border, and Banarasi kalka paisleys at base corners.
+  - **Framing & Headroom:** `pt-16 sm:pt-24` top clearance centers the Sangeet ceremony title directly under the apex of the multi-foil arch.
+  - **Typography & Components:** Shimmering champagne-gold gradient heading (`from-amber-100 via-gold-bright to-amber-200`), dark frosted glass date badge (`bg-black/45 border-gold-bright/40 text-amber-50`), crisp ivory venue copy (`text-amber-50`), and deep plum/black glass action pills.
+  - **Mobile Boundaries:** Bounded width (`max-w-[275px]` on mobile) ensures comfortable breathing room from the musical instrument borders on compact screens (360px Android and 390px iPhone). AAA readability verified.
+
+- **Wedding Ceremony Card Theming (Candidate 2A):**
+  - **Asset Choice:** "Gaja Lakshmi & Shubh Vivah" — Opulent 3D Gold Zardozi on Kumkum Crimson Silk (`public/ornaments/wedding-card-bg.webp`, 141.4 KB; `.jpg` fallback at 225.0 KB, precision-cropped to outer border 766 × 1066 px).
+  - **Iconography & Motifs:** Grand ceremonial multi-foil temple arch crowned with sacred kalash and coconut; twin 3D gold embroidered ceremonial elephants (Gaja) holding golden lotus blossoms facing inward at the base; cascading temple bells and deep red/gold Banarasi brocade borders.
+  - **Auspicious Header:** Added sacred bilingual header `॥ शुभ विवाह ॥` (Hindi) / `॥ Shubh Vivah ॥` (English) in tracking-widest gold typography (`text-amber-200/90`) directly above the ceremony title.
+  - **Framing & Elephant Clearance:** Configured responsive padding `pt-12 sm:pt-20 px-4 sm:px-8 pb-40 sm:pb-6 text-center items-center`. The mobile `pb-40` bottom padding reserves ~160px clearance at the base, ensuring action buttons float neatly above the twin royal elephants and their raised lotus blossoms without any overlap. Desktop retains compact `sm:pb-6` horizontal ratio.
+  - **Typography & Components:** Shimmering gold gradient headline (`from-amber-100 via-gold-bright to-amber-200`), crimson glass date pill badge (`border-gold-bright/40 bg-black/45 text-amber-50 shadow-md backdrop-blur-sm`), ivory/amber venue details (`text-amber-50/95` and `text-amber-200/80`), and crimson/gold glass action pills (`border-gold-bright/50 bg-black/55 backdrop-blur-sm text-amber-100 hover:bg-red-950/80 hover:border-gold-bright hover:text-white`).
+  - **Active Notch & Radiance:** Highlighted timeline active notch with bright gold radiance (`bg-gradient-to-b from-amber-300 via-gold-bright to-amber-400 shadow-[0_0_12px_rgba(212,175,55,0.95)]`) and royal amber card border glow (`border-2 border-amber-500/60 shadow-[0_20px_50px_-10px_rgba(180,83,9,0.5),0_0_0_1px_rgba(212,175,55,0.5)]`).
+  - **Accessibility & Compliance:** AAA readability verified across desktop (1280px) and mobile viewports (390px iPhone, 360px Android) in both English and Hindi. Strict compliance with Kashi content boundary rule preserved.
+
+- **Wedding Ceremony Card Special Creative Touches (Option A: The Grand Royal Suite):**
+  - **Pushpa Vrishti (Interactive Petal & Golden Akshat Shower):**
+    - Interactive celebration pill button `🌸 Shower Blessings` (`🌸 आशीर्वाद दें (पुष्प वृष्टि)`) centered above the utility buttons with a live blessing counter starting at auspicious 108.
+    - Self-contained, GPU-accelerated HTML5 Canvas particle system (`src/components/PushpaVrishti.tsx`) simulating 3D tumbling red rose petals, vibrant orange & yellow marigold florets, and shimmering golden akshat grains.
+    - Auspicious floating toast banner: `॥ सदा सर्वदा मंगलम् ॥ Your heartfelt blessings have been showered!` (`॥ सदा सर्वदा मंगलम् ॥ आपके पावन आशीर्वाद जोड़े तक पहुँच गए!`).
+    - Respects `prefers-reduced-motion: reduce`: particles bypass canvas rendering while preserving toast feedback and counter updates.
+  - **24k Zari Gold Sheen & Breathing Card Glow:**
+    - Metallic gold traveling sheen (`.gold-text-sheen`) on the auspicious `॥ शुभ विवाह ॥` / `॥ Shubh Vivah ॥` header.
+    - Soft breathing ambient amber/crimson halo (`.wedding-card-glow`) elevating the card into a living royal centerpiece without layout shift.
+    - Mobile padding increased to `pb-44 sm:pb-6`, preserving full unobstructed view of the twin royal elephants and golden lotuses below the buttons.
