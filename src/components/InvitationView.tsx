@@ -228,8 +228,7 @@ export function InvitationView({
                 poster="/videos/kashi-dawn-poster.jpg"
                 className="h-full w-full"
                 objectPosition="center 60%"
-                parallax={true}
-                parallaxSpeed={0.1}
+                parallax={false}
                 overlayGradient="bg-gradient-to-t from-black/80 via-black/25 to-black/30"
               >
                 <div className="absolute inset-0 flex flex-col items-center justify-end pb-4 px-4 text-center text-white">

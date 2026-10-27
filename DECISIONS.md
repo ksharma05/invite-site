@@ -287,3 +287,8 @@ titleHi)` (pure, unit-tested) maps a ceremony to a motif by stable id, then
     - Metallic gold traveling sheen (`.gold-text-sheen`) on the auspicious `॥ शुभ विवाह ॥` / `॥ Shubh Vivah ॥` header.
     - Soft breathing ambient amber/crimson halo (`.wedding-card-glow`) elevating the card into a living royal centerpiece without layout shift.
     - Mobile padding increased to `pb-44 sm:pb-6`, preserving full unobstructed view of the twin royal elephants and golden lotuses below the buttons.
+
+- **Itinerary Section Video Banner Parallax Removal:**
+  - Disabled scroll parallax (`parallax={false}`) on the Section 4 (Ceremonial Celebration / Kashi Dawn) video banner.
+  - Eliminates main-thread scroll listener overhead and touch jank on mobile devices.
+  - Removes `scale(1.08)` and vertical shift, ensuring rock-solid framing of the boat, lanterns, and bilingual text overlay across all devices.
