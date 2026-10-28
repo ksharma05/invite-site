@@ -175,12 +175,12 @@ export function KashiScrollHero({
         className="relative h-screen min-h-[640px] w-full overflow-hidden bg-black text-white"
       >
         {/* 
-          Background: Shot 3 (Mandap Portal Reveal overlooking moonlit Kashi & Aarti Fire)
+          Background: Newlywed couple (Khushal & Sanjukta) on ceremonial boat at dawn
           Unobstructed cinematic view on initial render.
         */}
         <AdaptiveSectionVideo
-          src="/videos/hero-mandap.mp4"
-          poster="/videos/hero-mandap-poster.jpg"
+          src="/videos/hero-couple.mp4"
+          poster="/videos/hero-couple-poster.jpg"
           className="absolute inset-0 h-full w-full"
           objectPosition="center center"
           parallax={false}

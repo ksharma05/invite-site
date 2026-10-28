@@ -292,3 +292,9 @@ titleHi)` (pure, unit-tested) maps a ceremony to a motif by stable id, then
   - Disabled scroll parallax (`parallax={false}`) on the Section 4 (Ceremonial Celebration / Kashi Dawn) video banner.
   - Eliminates main-thread scroll listener overhead and touch jank on mobile devices.
   - Removes `scale(1.08)` and vertical shift, ensuring rock-solid framing of the boat, lanterns, and bilingual text overlay across all devices.
+
+- **Hero Section Background Video Update (Couple Face-Matched Cinematic Video):**
+  - **Asset Choice:** Replaced `/videos/hero-mandap.mp4` with the newly generated couple video `/videos/hero-couple.mp4` (1280x720, 8s H.264, 2.69 MB).
+  - **Subject & Atmosphere:** Khushal & Sanjukta in their bridal sherwani and lehenga aboard a traditional wooden boat adorned with marigold garlands on the sacred river at dawn, with Varanasi ghats softly illuminated in the background.
+  - **Poster Extraction:** Extracted high-fidelity initial video frame at 0.5s to `/videos/hero-couple-poster.jpg` via FFmpeg to prevent layout shifts or black frames during initial buffering.
+  - **Framing & Typography Contrast:** Preserved `parallax={false}`, `objectPosition="center center"`, and `overlayGradient="bg-gradient-to-t from-black/85 via-black/30 to-black/60"`. The couple remains perfectly framed and centered on both desktop (1280px) and narrow mobile (390px/360px) viewports behind the floating sacred diyas and the royal glass invitation card.
