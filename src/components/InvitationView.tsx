@@ -6,7 +6,7 @@ import { OrnamentalDivider } from "@/components/OrnamentalDivider";
 import { Reveal } from "@/components/Reveal";
 import { ItineraryTimeline } from "@/components/ItineraryTimeline";
 import { PhotoGallery } from "@/components/PhotoGallery";
-import { KashiScrollHero } from "@/components/KashiScrollHero";
+import { DiyaAartiHero } from "@/components/DiyaAartiHero";
 import { AuspiciousInvocation } from "@/components/AuspiciousInvocation";
 import { AccordionFAQ } from "@/components/AccordionFAQ";
 import { AdaptiveSectionVideo } from "@/components/AdaptiveSectionVideo";
@@ -61,9 +61,9 @@ export function InvitationView({
       <FloatingControls lang={lang} side={side} />
 
       {/*
-        Hero: Cinematic Kashi Mandap video prologue with dual-mode card entrance.
+        Hero: diya/aarti-trail ignition prologue with dual-mode card entrance.
       */}
-      <KashiScrollHero
+      <DiyaAartiHero
         lang={lang}
         primaryName={formatName(primaryName, lang)}
         secondaryName={formatName(secondaryName, lang)}

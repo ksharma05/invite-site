@@ -7,6 +7,7 @@
  */
 
 import { mandalaArch } from "./mandalaArch.ts";
+import { templeArchSilhouette } from "./templeArchSilhouette.ts";
 import { monogramRings, monogramLockup } from "./monogramRings.ts";
 import { paisleyCorner } from "./paisleyCorner.ts";
 import { toranBand } from "./toranBand.ts";
@@ -26,12 +27,17 @@ import {
 } from "./motifs.ts";
 import { ganeshMotif } from "./ganeshMotif.ts";
 import { shivParvatiMotif } from "./shivParvatiMotif.ts";
+import { diyaLit } from "./diyaLit.ts";
+import { diyaUnlit } from "./diyaUnlit.ts";
+import { flame } from "./flame.ts";
+import { emberSpeck } from "./emberSpeck.ts";
 
 /** The full catalogue, in render order (decorations before motifs). */
 export const ornamentCatalogue = [
   ganeshMotif,
   shivParvatiMotif,
   mandalaArch,
+  templeArchSilhouette,
   monogramRings,
   monogramLockup,
   paisleyCorner,
@@ -48,6 +54,10 @@ export const ornamentCatalogue = [
   ceremonyMotif,
   receptionMotif,
   kalashMotif,
+  diyaLit,
+  diyaUnlit,
+  flame,
+  emberSpeck,
 ] as const;
 
 export type Ornament = (typeof ornamentCatalogue)[number];

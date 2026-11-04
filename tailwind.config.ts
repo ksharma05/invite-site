@@ -33,6 +33,9 @@ const config: Config = {
         soft: "var(--shadow-soft)",
         ornate: "var(--shadow-ornate)",
       },
+      backgroundImage: {
+        "flame-glow": "var(--glow-flame)",
+      },
       transitionTimingFunction: {
         invite: "var(--motion-ease)",
       },

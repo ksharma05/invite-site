@@ -28,6 +28,7 @@
   --color-gold-line: rgb(201 162 39 / 0.32);
   --color-card-tint: #f7ead9;
   --color-rule: #e6cfae;
+  --glow-flame: radial-gradient(circle, #fff3c4 0%, rgba(212, 175, 55, 0.45) 45%, rgba(212, 175, 55, 0) 100%);
   --radius-ornate: 1rem;
   --shadow-soft: 0 12px 32px -16px rgb(178 96 47 / 0.35);
   --shadow-ornate: 0 18px 44px -18px rgb(178 96 47 / 0.38), 0 0 0 1px rgb(201 162 39 / 0.22);
@@ -387,6 +388,40 @@ body {
 
 .float-diya {
   animation: floatDiyaGently 4s ease-in-out infinite;
+}
+
+@keyframes scrollCueDotFall {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  70% {
+    opacity: 0.3;
+  }
+  100% {
+    transform: translateY(22px);
+    opacity: 0;
+  }
+}
+
+.scroll-overlay-dot {
+  animation: scrollCueDotFall 1.6s ease-in-out infinite;
+}
+
+@keyframes scrollCueChevronBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(8px);
+    opacity: 1;
+  }
+}
+
+.scroll-overlay-chevron {
+  animation: scrollCueChevronBounce 1.6s ease-in-out infinite;
 }
 
 @keyframes pulseGlint {
