@@ -44,6 +44,49 @@ describe("parseEventRow", () => {
     expect(result.success).toBe(true);
   });
 
+  it("accepts per-side times without a shared startAt", () => {
+    const { startAt, ...withoutStart } = validEvent;
+    const result = parseEventRow({
+      ...withoutStart,
+      startAtBride: "2026-11-23T09:00:00+05:30",
+      startAtGroom: "2026-11-24T09:00:00+05:30",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects an event with no start time for a side that can see it", () => {
+    const { startAt, ...withoutStart } = validEvent;
+    const result = parseEventRow({
+      ...withoutStart,
+      startAtBride: "2026-11-23T09:00:00+05:30",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("accepts a one-side event that only has that side's time", () => {
+    const { startAt, ...withoutStart } = validEvent;
+    const result = parseEventRow({
+      ...withoutStart,
+      visibleTo: "groom",
+      startAtGroom: "2026-11-24T09:00:00+05:30",
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it("rejects a per-side end time before that side's start time", () => {
+    const result = parseEventRow({
+      ...validEvent,
+      startAtGroom: "2026-11-24T09:00:00+05:30",
+      endAtGroom: "2026-11-24T08:00:00+05:30",
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it("rejects an invalid per-side timestamp", () => {
+    const result = parseEventRow({ ...validEvent, startAtBride: "23 Nov, 9am" });
+    expect(result.success).toBe(false);
+  });
+
   it("rejects a missing stable id", () => {
     const { id, ...withoutId } = validEvent;
     const result = parseEventRow(withoutId);

@@ -95,15 +95,16 @@ exactly these names and header rows (frozen header row recommended).
 | --- | ----- | ------ | --------- | -------- | -------- | ----------- | ----------- | ------- | ----- | ------------ | ------------ | --------------- | --------------- | ------ | ------------ | ------------ | -------- | -------- | -------- |
 
 - `id`: a short stable slug (e.g. `haldi`, `mehendi`, `sangeet`, `wedding-ceremony`). Never reuse an id for a different event; never change an existing id.
-- `order`: a number controlling display order.
+- `order`: only a tie-breaker. The itinerary is ordered by each side's start date and time; `order` decides the sequence only when two events start at exactly the same time.
 - `active`: `TRUE`/`FALSE` (use a checkbox or dropdown). `FALSE` hides the event without deleting its row — this is how you "hide and restore".
 - `visibleTo`: `bride`, `groom`, or `both`.
-- `startAt` / `endAt`: ISO 8601 with the `+05:30` offset, e.g. `2026-11-23T09:00:00+05:30`. `endAt` is optional.
+- `startAt` / `endAt`: ISO 8601 with the `+05:30` offset, e.g. `2026-11-23T09:00:00+05:30`. `endAt` is optional. Format these columns as **Plain text** so Sheets keeps the value exactly as typed.
+- `startAtBride`, `endAtBride`, `startAtGroom`, `endAtGroom` (optional columns, same format): per-side times for ceremonies held at a different time for each side (e.g. Haldi, Mehendi, Sangeet). A blank cell falls back to the shared `startAt`/`endAt`. The shared `startAt` may be left blank only if every side that sees the event has its own start time. Leave all four blank for events at the same time for both sides (e.g. the wedding ceremony).
 - `mapUrl`, `imageUrl`: full URLs, optional.
 - `subtitle_*`, `dressCode_*`, `notes_*`: optional; leave both language cells blank to omit the whole field.
 - `venueNameBride_en`, `venueNameBride_hi`, `venueAddressBride_en`, `venueAddressBride_hi`, `mapUrlBride`, `venueNameGroom_en`, `venueNameGroom_hi`, `venueAddressGroom_en`, `venueAddressGroom_hi`, `mapUrlGroom`: optional per-side overrides for ceremonies held at a different venue for each side (e.g. Haldi, Mehendi, Sangeet). Leave all of these blank to show the shared `venueName`/`venueAddress`/`mapUrl` to both sides — this is what the wedding ceremony row should do.
 
-**To add a new event** (e.g. another ceremony): add a new row with a new `id`. It appears automatically within the configured refresh window — no code change or deployment needed. **To delete**: remove the row (or set `active` to `FALSE` to hide without deleting). **To reorder**: change the `order` numbers.
+**To add a new event** (e.g. another ceremony): add a new row with a new `id`. It appears automatically within the configured refresh window — no code change or deployment needed. **To delete**: remove the row (or set `active` to `FALSE` to hide without deleting). **To reorder**: change the event's date/time — each side's itinerary is sorted by its own start times.
 
 ### Tab "Faqs" (optional — leave empty to skip the FAQ section entirely)
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import type { Lang, Side, WeddingEvent } from "@/lib/content/types";
+import type { Lang, Side, SideEvent } from "@/lib/content/types";
 import { t } from "@/lib/i18n/dictionary";
 import { EventMotif } from "@/components/ornaments/EventMotif";
 import { DownloadIcsButton } from "@/components/DownloadIcsButton";
@@ -43,24 +43,17 @@ function formatDateTime(iso: string, lang: Lang): string {
   }).format(new Date(iso));
 }
 
-/**
- * Resolves the venue to show for the side currently viewing the invitation. Ceremonies held
- * at different locations for each side (e.g. Haldi/Mehendi/Sangeet) carry bride/groom venue
- * overrides; events with one shared venue (e.g. the wedding ceremony) simply omit them.
- */
-function resolveVenue(event: WeddingEvent, side: Side, lang: Lang) {
-  const name = side === "bride" ? event.venueNameBride : event.venueNameGroom;
-  const address = side === "bride" ? event.venueAddressBride : event.venueAddressGroom;
-  const mapUrl = side === "bride" ? event.mapUrlBride : event.mapUrlGroom;
+function venueFor(event: SideEvent, lang: Lang) {
   return {
-    venueName: (name ?? event.venueName)?.[lang] ?? "",
-    venueAddress: address?.[lang] || event.venueAddress?.[lang] || "",
-    mapUrl: mapUrl ?? event.mapUrl,
+    venueName: event.venueName?.[lang] ?? "",
+    venueAddress: event.venueAddress?.[lang] ?? "",
+    mapUrl: event.mapUrl,
   };
 }
 
 export interface ItineraryTimelineProps {
-  events: WeddingEvent[];
+  /** Already resolved for `side` (see resolveEventForSide) and sorted chronologically. */
+  events: SideEvent[];
   lang: Lang;
   side: Side;
   weddingCardEyebrow: string;
@@ -215,7 +208,7 @@ export function ItineraryTimeline({
           const isSangeet = event.id === "sangeet";
           const isWedding = event.id === "wedding-ceremony";
           const isDarkThemed = isHaldi || isMehendi || isSangeet || isWedding;
-          const venue = resolveVenue(event, side, lang);
+          const venue = venueFor(event, lang);
 
           const calEntry: CalendarEntry = {
             title: event.title[lang],

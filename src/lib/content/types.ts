@@ -42,9 +42,14 @@ export interface WeddingEvent {
   visibleTo: EventSide;
   title: Bilingual;
   subtitle?: Bilingual;
-  /** ISO 8601 with offset, e.g. 2026-11-25T10:00:00+05:30 — canonical source of truth. */
-  startAt: string;
+  /** ISO 8601 with offset, e.g. 2026-11-25T10:00:00+05:30. Optional when every side that sees the event has its own startAt override below. */
+  startAt?: string;
   endAt?: string;
+  /** Per-side overrides for ceremonies held at different times for each side; fall back to startAt/endAt when absent. */
+  startAtBride?: string;
+  endAtBride?: string;
+  startAtGroom?: string;
+  endAtGroom?: string;
   /** Shared venue; optional when every side that sees the event has its own override below. */
   venueName?: Bilingual;
   venueAddress?: Bilingual;
@@ -60,6 +65,9 @@ export interface WeddingEvent {
   notes?: Bilingual;
   imageUrl?: string;
 }
+
+/** An event as seen by one side: per-side time/venue overrides already applied to the shared fields. */
+export type SideEvent = Omit<WeddingEvent, "startAt"> & { startAt: string };
 
 export interface FaqItem {
   id: string;

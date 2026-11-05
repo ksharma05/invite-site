@@ -16,6 +16,10 @@
  *   venueAddressBride_en, venueAddressBride_hi, venueAddressGroom_en,
  *   venueAddressGroom_hi, mapUrlBride, mapUrlGroom. Leave these blank to use
  *   the shared venueName/venueAddress/mapUrl for both sides.
+ *   Optional per-side time overrides (same ISO format as startAt):
+ *   startAtBride, endAtBride, startAtGroom, endAtGroom. Leave blank to use the
+ *   shared startAt/endAt. The itinerary is ordered by each side's start time;
+ *   `order` only breaks ties between identical start times.
  *
  * Tab "Faqs":    id, order, active, question_en, question_hi, answer_en, answer_hi
  *
@@ -56,8 +60,12 @@ export function mapEventRow(row: SheetRow): unknown {
       emptyToUndefined(row.subtitle_en) || emptyToUndefined(row.subtitle_hi)
         ? { en: normalizeCell(row.subtitle_en), hi: normalizeCell(row.subtitle_hi) }
         : undefined,
-    startAt: normalizeCell(row.startAt),
+    startAt: emptyToUndefined(row.startAt),
     endAt: emptyToUndefined(row.endAt),
+    startAtBride: emptyToUndefined(row.startAtBride),
+    endAtBride: emptyToUndefined(row.endAtBride),
+    startAtGroom: emptyToUndefined(row.startAtGroom),
+    endAtGroom: emptyToUndefined(row.endAtGroom),
     venueName:
       emptyToUndefined(row.venueName_en) || emptyToUndefined(row.venueName_hi)
         ? { en: normalizeCell(row.venueName_en), hi: normalizeCell(row.venueName_hi) }

@@ -105,6 +105,32 @@ describe("mapEventRow", () => {
     expect(parseEventRow(mapEventRow(row)).success).toBe(true);
   });
 
+  it("maps per-side time columns and treats blank ones as absent", () => {
+    const row = {
+      id: "haldi",
+      order: "1",
+      active: "TRUE",
+      visibleTo: "both",
+      title_en: "Haldi",
+      title_hi: "हल्दी",
+      startAt: "",
+      startAtBride: "2026-11-23T09:00:00+05:30",
+      endAtBride: "",
+      startAtGroom: "2026-11-24T10:00:00+05:30",
+      endAtGroom: "2026-11-24T13:00:00+05:30",
+      venueName_en: "Family home",
+      venueName_hi: "घर",
+    };
+    const result = parseEventRow(mapEventRow(row));
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.startAt).toBeUndefined();
+      expect(result.data.startAtBride).toBe("2026-11-23T09:00:00+05:30");
+      expect(result.data.endAtBride).toBeUndefined();
+      expect(result.data.endAtGroom).toBe("2026-11-24T13:00:00+05:30");
+    }
+  });
+
   it("accepts per-side venues whose address cells are all blank", () => {
     const row = {
       id: "haldi",

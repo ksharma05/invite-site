@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
-import type { WeddingEvent } from "@/lib/content/types";
+import type { SideEvent } from "@/lib/content/types";
 import { resolveCountdownTarget } from "@/lib/invitation/resolveCountdownTarget";
 
-function ev(id: string, order: number, extra: Partial<WeddingEvent> = {}): WeddingEvent {
+function ev(id: string, order: number, extra: Partial<SideEvent> = {}): SideEvent {
   return {
     id,
     order,
@@ -30,6 +30,14 @@ describe("resolveCountdownTarget", () => {
 
   it("falls back to the earliest visible event when no ceremony is present", () => {
     const events = [ev("haldi", 2), ev("sangeet", 1)];
+    expect(resolveCountdownTarget(events, "groom")?.id).toBe("sangeet");
+  });
+
+  it("falls back to the earliest event by start time, not by order", () => {
+    const events = [
+      ev("haldi", 1, { startAt: "2026-11-24T09:00:00+05:30" }),
+      ev("sangeet", 2, { startAt: "2026-11-23T19:00:00+05:30" }),
+    ];
     expect(resolveCountdownTarget(events, "groom")?.id).toBe("sangeet");
   });
 

@@ -14,6 +14,10 @@ import { AccordionFAQ } from "@/components/AccordionFAQ";
 import { AdaptiveSectionVideo } from "@/components/AdaptiveSectionVideo";
 import { Ornament } from "@/components/ornaments/Ornament";
 import { resolveCountdownTarget } from "@/lib/invitation/resolveCountdownTarget";
+import {
+  compareEventsChronologically,
+  resolveEventForSide,
+} from "@/lib/invitation/resolveEventForSide";
 import { resolveCopy } from "@/lib/content/copyDefaults";
 
 function formatName(name: PersonName, lang: Lang): string {
@@ -45,7 +49,8 @@ export function InvitationView({
 
   const visibleEvents = events
     .filter((e) => e.active && (e.visibleTo === "both" || e.visibleTo === side))
-    .sort((a, b) => a.order - b.order);
+    .map((e) => resolveEventForSide(e, side))
+    .sort(compareEventsChronologically);
 
   const visibleFaqs = (content.faqs ?? [])
     .filter((f) => f.active)

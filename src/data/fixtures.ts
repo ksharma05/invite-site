@@ -43,6 +43,8 @@ export const fixtureContent: InvitationContent = {
       visibleTo: "both",
       title: { en: "Haldi", hi: "[मसौदा] हल्दी" },
       startAt: "2026-11-23T09:00:00+05:30",
+      // Example of a ceremony held at a different time for one side; the bride's side uses startAt.
+      startAtGroom: "2026-11-24T10:00:00+05:30",
       venueName: {
         en: "Venue to be confirmed, Bermo, Jharkhand",
         hi: "[मसौदा] स्थान की पुष्टि होनी बाकी है, बेरमो, झारखंड",
@@ -101,6 +103,7 @@ export const fixtureContent: InvitationContent = {
       visibleTo: "both",
       title: { en: "Sangeet", hi: "[मसौदा] संगीत" },
       startAt: "2026-11-24T19:00:00+05:30",
+      startAtGroom: "2026-11-23T19:00:00+05:30",
       venueName: {
         en: "Venue to be confirmed, Bermo, Jharkhand",
         hi: "[मसौदा] स्थान की पुष्टि होनी बाकी है, बेरमो, झारखंड",

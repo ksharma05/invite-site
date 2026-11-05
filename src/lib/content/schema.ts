@@ -16,6 +16,11 @@ const optionalBilingualSchema = z.object({
   hi: z.string(),
 });
 
+const isoTimestamp = (field: string) =>
+  z.string().refine((v) => !Number.isNaN(Date.parse(v)), {
+    message: `${field} must be a valid ISO 8601 timestamp`,
+  });
+
 const personNameSchema = z.object({
   en: z.string().min(1),
   hi: z.string().min(1),
@@ -45,15 +50,13 @@ export const weddingEventSchema = z
     visibleTo: z.enum(["bride", "groom", "both"]),
     title: bilingualSchema,
     subtitle: bilingualSchema.optional(),
-    startAt: z.string().refine((v) => !Number.isNaN(Date.parse(v)), {
-      message: "startAt must be a valid ISO 8601 timestamp",
-    }),
-    endAt: z
-      .string()
-      .refine((v) => !Number.isNaN(Date.parse(v)), {
-        message: "endAt must be a valid ISO 8601 timestamp",
-      })
-      .optional(),
+    /** Shared time; optional when every side that sees the event has its own override below. */
+    startAt: isoTimestamp("startAt").optional(),
+    endAt: isoTimestamp("endAt").optional(),
+    startAtBride: isoTimestamp("startAtBride").optional(),
+    endAtBride: isoTimestamp("endAtBride").optional(),
+    startAtGroom: isoTimestamp("startAtGroom").optional(),
+    endAtGroom: isoTimestamp("endAtGroom").optional(),
     /** Shared venue; optional when every side that sees the event has its own override below. */
     venueName: bilingualSchema.optional(),
     venueAddress: bilingualSchema.optional(),
@@ -69,14 +72,27 @@ export const weddingEventSchema = z
     notes: bilingualSchema.optional(),
     imageUrl: z.string().url().optional(),
   })
-  .refine((event) => !event.endAt || Date.parse(event.endAt) >= Date.parse(event.startAt), {
-    message: "endAt must not be before startAt",
-    path: ["endAt"],
-  })
   .superRefine((event, ctx) => {
     const sides =
       event.visibleTo === "both" ? (["bride", "groom"] as const) : ([event.visibleTo] as const);
     for (const side of sides) {
+      const suffix = side === "bride" ? "Bride" : "Groom";
+      const start = (side === "bride" ? event.startAtBride : event.startAtGroom) ?? event.startAt;
+      const end = (side === "bride" ? event.endAtBride : event.endAtGroom) ?? event.endAt;
+      if (!start) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `needs startAt or startAt${suffix}`,
+          path: ["startAt"],
+        });
+      } else if (end && Date.parse(end) < Date.parse(start)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `endAt must not be before startAt for the ${side}'s side`,
+          path: ["endAt"],
+        });
+      }
+
       const name = side === "bride" ? event.venueNameBride : event.venueNameGroom;
       if (!name && !event.venueName) {
         ctx.addIssue({
