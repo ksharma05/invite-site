@@ -9,47 +9,180 @@ export interface MusicToggleProps {
   className?: string;
 }
 
+const TRACKS = ["-fxA5IAh_ZA", "D5NHvEVAbWY"] as const;
+const TRACK_STORAGE_KEY = "sk-music-track";
+const VOLUME = 65;
+const GESTURE_EVENTS = ["click", "keydown", "touchend"] as const;
+
+interface YTPlayer {
+  playVideo(): void;
+  pauseVideo(): void;
+  setVolume(volume: number): void;
+  destroy(): void;
+}
+
+interface YTNamespace {
+  Player: new (element: HTMLElement, options: Record<string, unknown>) => YTPlayer;
+  PlayerState: { ENDED: number; PLAYING: number; PAUSED: number };
+}
+
+declare global {
+  interface Window {
+    YT?: YTNamespace;
+    onYouTubeIframeAPIReady?: () => void;
+  }
+}
+
+let apiPromise: Promise<YTNamespace> | null = null;
+
+function loadYouTubeApi(): Promise<YTNamespace> {
+  if (apiPromise) return apiPromise;
+  apiPromise = new Promise((resolve) => {
+    if (window.YT?.Player) {
+      resolve(window.YT);
+      return;
+    }
+    const previous = window.onYouTubeIframeAPIReady;
+    window.onYouTubeIframeAPIReady = () => {
+      previous?.();
+      if (window.YT) resolve(window.YT);
+    };
+    const script = document.createElement("script");
+    script.src = "https://www.youtube.com/iframe_api";
+    script.async = true;
+    script.onerror = () => {
+      apiPromise = null;
+    };
+    document.head.appendChild(script);
+  });
+  return apiPromise;
+}
+
+// Module-level so StrictMode's double effect doesn't advance the rotation twice in one page load.
+let trackThisLoad: string | null = null;
+
+function pickTrack(): string {
+  if (trackThisLoad) return trackThisLoad;
+  let next = 0;
+  try {
+    const previous = Number.parseInt(window.localStorage.getItem(TRACK_STORAGE_KEY) ?? "", 10);
+    if (previous >= 0 && previous < TRACKS.length) next = (previous + 1) % TRACKS.length;
+    window.localStorage.setItem(TRACK_STORAGE_KEY, String(next));
+  } catch {
+    // Storage blocked: fall back to the first track.
+  }
+  const track = TRACKS[next] ?? TRACKS[0];
+  trackThisLoad = track;
+  return track;
+}
+
 /**
  * Royal Glassmorphic Music Toggle Button
- * Controls ambient auspicious wedding background music.
+ * Streams ambient wedding music via a hidden YouTube player, alternating tracks per page load.
  * Matches the LanguageSwitcher and Hero Card aesthetic with gold borders and specular shimmer.
  */
 export function MusicToggle({ lang, className = "" }: MusicToggleProps) {
   const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const hostRef = useRef<HTMLDivElement | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const playerRef = useRef<YTPlayer | null>(null);
+  const readyRef = useRef(false);
+  const pendingPlayRef = useRef(false);
+  const userPausedRef = useRef(false);
 
   useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
+    const host = hostRef.current;
+    if (!host) return;
 
-    audio.volume = 0.65;
+    let cancelled = false;
+    const videoId = pickTrack();
 
-    const handlePlay = () => setIsPlaying(true);
-    const handlePause = () => setIsPlaying(false);
-    const handleEnded = () => setIsPlaying(false);
+    const removeGestureListeners = () => {
+      GESTURE_EVENTS.forEach((type) => window.removeEventListener(type, onGesture));
+    };
 
-    audio.addEventListener("play", handlePlay);
-    audio.addEventListener("pause", handlePause);
-    audio.addEventListener("ended", handleEnded);
+    // Kept until playback actually starts: a gesture that the browser doesn't count as activation gets retried on the next one.
+    function onGesture(event: Event) {
+      if (buttonRef.current?.contains(event.target as Node)) return;
+      if (userPausedRef.current) {
+        removeGestureListeners();
+        return;
+      }
+      if (readyRef.current) playerRef.current?.playVideo();
+      else pendingPlayRef.current = true;
+    }
+
+    GESTURE_EVENTS.forEach((type) => window.addEventListener(type, onGesture, { passive: true }));
+
+    // YT.Player replaces the element it's given, so hand it a child rather than the React-owned node.
+    const mount = document.createElement("div");
+    host.appendChild(mount);
+
+    loadYouTubeApi().then((YT) => {
+      if (cancelled) return;
+      playerRef.current = new YT.Player(mount, {
+        videoId,
+        host: "https://www.youtube-nocookie.com",
+        width: 200,
+        height: 200,
+        playerVars: {
+          autoplay: 0,
+          controls: 0,
+          loop: 1,
+          playlist: videoId,
+          playsinline: 1,
+          modestbranding: 1,
+          rel: 0,
+        },
+        events: {
+          onReady: (event: { target: YTPlayer }) => {
+            readyRef.current = true;
+            event.target.setVolume(VOLUME);
+            if (pendingPlayRef.current && !userPausedRef.current) event.target.playVideo();
+          },
+          onStateChange: (event: { data: number }) => {
+            if (event.data === YT.PlayerState.PLAYING) {
+              setIsPlaying(true);
+              removeGestureListeners();
+            } else if (
+              event.data === YT.PlayerState.PAUSED ||
+              event.data === YT.PlayerState.ENDED
+            ) {
+              setIsPlaying(false);
+            }
+          },
+          onError: (event: { data: number }) => {
+            console.warn(`Background music unavailable (YouTube error ${event.data})`);
+            setIsPlaying(false);
+          },
+        },
+      });
+    });
 
     return () => {
-      audio.removeEventListener("play", handlePlay);
-      audio.removeEventListener("pause", handlePause);
-      audio.removeEventListener("ended", handleEnded);
+      cancelled = true;
+      removeGestureListeners();
+      playerRef.current?.destroy();
+      playerRef.current = null;
+      readyRef.current = false;
+      host.replaceChildren();
     };
   }, []);
 
   const toggleMusic = () => {
-    const audio = audioRef.current;
-    if (!audio) return;
+    const player = playerRef.current;
+    if (!player || !readyRef.current) {
+      userPausedRef.current = false;
+      pendingPlayRef.current = true;
+      return;
+    }
 
     if (isPlaying) {
-      audio.pause();
+      userPausedRef.current = true;
+      player.pauseVideo();
     } else {
-      audio.play().catch(() => {
-        // Autoplay may be restricted until direct user interaction
-        setIsPlaying(false);
-      });
+      userPausedRef.current = false;
+      player.playVideo();
     }
   };
 
@@ -57,8 +190,13 @@ export function MusicToggle({ lang, className = "" }: MusicToggleProps) {
 
   return (
     <>
-      <audio ref={audioRef} src="/audio/background-music.mp3" loop preload="metadata" />
+      <div
+        ref={hostRef}
+        aria-hidden="true"
+        className="pointer-events-none fixed top-0 -left-[9999px] h-px w-px overflow-hidden"
+      />
       <button
+        ref={buttonRef}
         type="button"
         onClick={toggleMusic}
         aria-label={actionLabel}
@@ -108,7 +246,7 @@ export function MusicToggle({ lang, className = "" }: MusicToggleProps) {
 
           {/* Music Note Icon / Symbol */}
           <span className="text-xs sm:text-sm tracking-wide text-white/80 group-hover:text-white">
-            {isPlaying ? "♫" : "♫"}
+            ♫
           </span>
         </span>
       </button>
