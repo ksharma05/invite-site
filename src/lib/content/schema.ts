@@ -10,6 +10,12 @@ const bilingualSchema = z.object({
   hi: z.string().min(1, "Hindi text is required"),
 });
 
+/** Either language (or both) may be blank; consumers fall back per language. */
+const optionalBilingualSchema = z.object({
+  en: z.string(),
+  hi: z.string(),
+});
+
 const personNameSchema = z.object({
   en: z.string().min(1),
   hi: z.string().min(1),
@@ -55,8 +61,8 @@ export const weddingEventSchema = z
     /** Per-side overrides for ceremonies (Haldi/Mehendi/Sangeet) held at different venues for each side; falls back to venueName/venueAddress/mapUrl when absent. */
     venueNameBride: bilingualSchema.optional(),
     venueNameGroom: bilingualSchema.optional(),
-    venueAddressBride: bilingualSchema.optional(),
-    venueAddressGroom: bilingualSchema.optional(),
+    venueAddressBride: optionalBilingualSchema.optional(),
+    venueAddressGroom: optionalBilingualSchema.optional(),
     mapUrlBride: z.string().url().optional(),
     mapUrlGroom: z.string().url().optional(),
     dressCode: bilingualSchema.optional(),
@@ -72,19 +78,11 @@ export const weddingEventSchema = z
       event.visibleTo === "both" ? (["bride", "groom"] as const) : ([event.visibleTo] as const);
     for (const side of sides) {
       const name = side === "bride" ? event.venueNameBride : event.venueNameGroom;
-      const address = side === "bride" ? event.venueAddressBride : event.venueAddressGroom;
       if (!name && !event.venueName) {
         ctx.addIssue({
           code: z.ZodIssueCode.custom,
           message: `needs venueName or venueName${side === "bride" ? "Bride" : "Groom"}`,
           path: ["venueName"],
-        });
-      }
-      if (!address && !event.venueAddress) {
-        ctx.addIssue({
-          code: z.ZodIssueCode.custom,
-          message: `needs venueAddress or venueAddress${side === "bride" ? "Bride" : "Groom"}`,
-          path: ["venueAddress"],
         });
       }
     }

@@ -54,7 +54,7 @@ function resolveVenue(event: WeddingEvent, side: Side, lang: Lang) {
   const mapUrl = side === "bride" ? event.mapUrlBride : event.mapUrlGroom;
   return {
     venueName: (name ?? event.venueName)?.[lang] ?? "",
-    venueAddress: (address ?? event.venueAddress)?.[lang] ?? "",
+    venueAddress: address?.[lang] || event.venueAddress?.[lang] || "",
     mapUrl: mapUrl ?? event.mapUrl,
   };
 }
@@ -220,7 +220,7 @@ export function ItineraryTimeline({
           const calEntry: CalendarEntry = {
             title: event.title[lang],
             details: venue.venueName,
-            location: venue.venueAddress,
+            location: venue.venueAddress || venue.venueName,
             startAt: event.startAt,
             endAt: event.endAt,
           };
@@ -494,16 +494,18 @@ export function ItineraryTimeline({
                         {venue.venueName}
                       </p>
                     </div>
-                    <p
-                      className={`text-xs sm:text-sm ${
-                        isDarkThemed
-                          ? "text-amber-100/90 font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
-                          : "pl-6 text-ink-muted"
-                      }`}
-                      lang={lang}
-                    >
-                      {venue.venueAddress}
-                    </p>
+                    {venue.venueAddress && (
+                      <p
+                        className={`text-xs sm:text-sm ${
+                          isDarkThemed
+                            ? "text-amber-100/90 font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
+                            : "pl-6 text-ink-muted"
+                        }`}
+                        lang={lang}
+                      >
+                        {venue.venueAddress}
+                      </p>
+                    )}
                   </div>
 
                   {/* Optional Dress Code */}
@@ -641,7 +643,7 @@ export function ItineraryTimeline({
                       endAt={event.endAt}
                       title={event.title[lang]}
                       description={venue.venueName}
-                      location={venue.venueAddress}
+                      location={venue.venueAddress || venue.venueName}
                       labelKey="downloadIcs"
                       lang={lang}
                       className={

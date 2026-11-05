@@ -105,6 +105,32 @@ describe("mapEventRow", () => {
     expect(parseEventRow(mapEventRow(row)).success).toBe(true);
   });
 
+  it("accepts per-side venues whose address cells are all blank", () => {
+    const row = {
+      id: "haldi",
+      order: "1",
+      active: "TRUE",
+      visibleTo: "both",
+      title_en: "Haldi",
+      title_hi: "हल्दी",
+      startAt: "2026-11-23T09:00:00+05:30",
+      venueNameBride_en: "Bride home",
+      venueNameBride_hi: "वधू घर",
+      venueAddressBride_en: "",
+      venueAddressBride_hi: "",
+      venueNameGroom_en: "Groom home",
+      venueNameGroom_hi: "वर घर",
+      venueAddressGroom_en: "",
+      venueAddressGroom_hi: "",
+    };
+    const result = parseEventRow(mapEventRow(row));
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.venueAddressBride).toBeUndefined();
+      expect(result.data.venueAddressGroom).toBeUndefined();
+    }
+  });
+
   it("rejects a 'both' row missing a venue for one side and no shared venue", () => {
     const row = {
       id: "haldi",

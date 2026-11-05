@@ -30,6 +30,20 @@ describe("parseEventRow", () => {
     expect(result.success).toBe(false);
   });
 
+  it("accepts an event with no venue address at all", () => {
+    const { venueAddress, ...withoutAddress } = validEvent;
+    expect(parseEventRow(withoutAddress).success).toBe(true);
+  });
+
+  it("accepts a per-side venue address filled in only one language", () => {
+    const result = parseEventRow({
+      ...validEvent,
+      venueAddressBride: { en: "Ramnagar, Bermo", hi: "" },
+      venueAddressGroom: { en: "", hi: "राजेंद्रपुरा, अजमेर" },
+    });
+    expect(result.success).toBe(true);
+  });
+
   it("rejects a missing stable id", () => {
     const { id, ...withoutId } = validEvent;
     const result = parseEventRow(withoutId);
