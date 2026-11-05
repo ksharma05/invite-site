@@ -101,6 +101,7 @@ exactly these names and header rows (frozen header row recommended).
 - `startAt` / `endAt`: ISO 8601 with the `+05:30` offset, e.g. `2026-11-23T09:00:00+05:30`. `endAt` is optional.
 - `mapUrl`, `imageUrl`: full URLs, optional.
 - `subtitle_*`, `dressCode_*`, `notes_*`: optional; leave both language cells blank to omit the whole field.
+- `venueNameBride_en`, `venueNameBride_hi`, `venueAddressBride_en`, `venueAddressBride_hi`, `mapUrlBride`, `venueNameGroom_en`, `venueNameGroom_hi`, `venueAddressGroom_en`, `venueAddressGroom_hi`, `mapUrlGroom`: optional per-side overrides for ceremonies held at a different venue for each side (e.g. Haldi, Mehendi, Sangeet). Leave all of these blank to show the shared `venueName`/`venueAddress`/`mapUrl` to both sides — this is what the wedding ceremony row should do.
 
 **To add a new event** (e.g. another ceremony): add a new row with a new `id`. It appears automatically within the configured refresh window — no code change or deployment needed. **To delete**: remove the row (or set `active` to `FALSE` to hide without deleting). **To reorder**: change the `order` numbers.
 
@@ -126,6 +127,15 @@ One row per person. `role` must be exactly one of: `brideName`, `groomName`, `br
 | ---- | ------- | ------- |
 
 Three possible rows: `side=bride` (bride-side invitation passage), `side=groom` (groom-side passage), and an optional `side=blessing` row. Write complete sentences per language — do not expect the app to stitch fragments together.
+
+### Tab "Copy" (optional — leave empty or omit to use the site's built-in defaults)
+
+One row per ceremonial-copy string (invocation shlokas, hero eyebrow, wedding-card eyebrow, gallery heading/badge).
+
+| key | text_en | text_hi |
+| --- | ------- | ------- |
+
+`key` must be exactly one of: `invocationGaneshaHeader`, `invocationGaneshaBody`, `invocationShivParvatiHeader`, `invocationShivParvatiBody`, `heroEyebrow`, `weddingCardEyebrow`, `galleryHeading`, `galleryBadge`. Any key you don't add a row for (or this whole tab, if omitted) falls back to the site's built-in default text (`src/lib/content/copyDefaults.ts`) — nothing breaks mid-migration.
 
 ### Getting credentials
 

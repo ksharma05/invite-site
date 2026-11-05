@@ -12,6 +12,7 @@ import { AccordionFAQ } from "@/components/AccordionFAQ";
 import { AdaptiveSectionVideo } from "@/components/AdaptiveSectionVideo";
 import { Ornament } from "@/components/ornaments/Ornament";
 import { resolveCountdownTarget } from "@/lib/invitation/resolveCountdownTarget";
+import { resolveCopy } from "@/lib/content/copyDefaults";
 
 function formatName(name: PersonName, lang: Lang): string {
   const honorific = lang === "hi" ? name.honorificHi : name.honorificEn;
@@ -52,6 +53,15 @@ export function InvitationView({
   const countdownTarget = resolveCountdownTarget(visibleEvents, side);
   const isHi = lang === "hi";
 
+  const heroEyebrow = resolveCopy(content, "heroEyebrow", lang);
+  const weddingCardEyebrow = resolveCopy(content, "weddingCardEyebrow", lang);
+  const galleryHeading = resolveCopy(content, "galleryHeading", lang);
+  const galleryBadge = resolveCopy(content, "galleryBadge", lang);
+  const ganeshaHeader = resolveCopy(content, "invocationGaneshaHeader", lang);
+  const ganeshaBody = resolveCopy(content, "invocationGaneshaBody", lang);
+  const shivParvatiHeader = resolveCopy(content, "invocationShivParvatiHeader", lang);
+  const shivParvatiBody = resolveCopy(content, "invocationShivParvatiBody", lang);
+
   return (
     <div className="min-h-screen bg-surface selection:bg-primary selection:text-white">
       {/*
@@ -68,6 +78,7 @@ export function InvitationView({
         primaryName={formatName(primaryName, lang)}
         secondaryName={formatName(secondaryName, lang)}
         blessing={family.blessing ? family.blessing[lang] : null}
+        eyebrow={heroEyebrow}
       />
 
       {/* Main Content Area */}
@@ -76,7 +87,13 @@ export function InvitationView({
           1. SACRED AUSPICIOUS INVOCATIONS
           Lord Ganesha with Vakratunda Mahakaya Mantra & Lord Shiva + Mata Parvati blessing
         */}
-        <AuspiciousInvocation lang={lang} />
+        <AuspiciousInvocation
+          lang={lang}
+          ganeshaHeader={ganeshaHeader}
+          ganeshaBody={ganeshaBody}
+          shivParvatiHeader={shivParvatiHeader}
+          shivParvatiBody={shivParvatiBody}
+        />
 
         <OrnamentalDivider />
 
@@ -255,7 +272,12 @@ export function InvitationView({
           </div>
 
           {/* Interactive Sticky Focal Node Itinerary Timeline */}
-          <ItineraryTimeline events={visibleEvents} lang={lang} />
+          <ItineraryTimeline
+            events={visibleEvents}
+            lang={lang}
+            side={side}
+            weddingCardEyebrow={weddingCardEyebrow}
+          />
         </Reveal>
 
         {/* 5. GOOD TO KNOW (INTERACTIVE ACCORDION FAQS) */}
@@ -282,8 +304,13 @@ export function InvitationView({
         )}
 
         {/* 6. SACRED MEMORIES / PHOTO GALLERY */}
-        <Reveal as="section" aria-label={isHi ? "पावन स्मृतियाँ" : "Sacred Memories"}>
-          <PhotoGallery items={content.gallery} lang={lang} />
+        <Reveal as="section" aria-label={galleryHeading}>
+          <PhotoGallery
+            items={content.gallery}
+            lang={lang}
+            heading={galleryHeading}
+            badge={galleryBadge}
+          />
         </Reveal>
 
         <OrnamentalDivider />

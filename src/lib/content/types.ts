@@ -45,9 +45,17 @@ export interface WeddingEvent {
   /** ISO 8601 with offset, e.g. 2026-11-25T10:00:00+05:30 — canonical source of truth. */
   startAt: string;
   endAt?: string;
-  venueName: Bilingual;
-  venueAddress: Bilingual;
+  /** Shared venue; optional when every side that sees the event has its own override below. */
+  venueName?: Bilingual;
+  venueAddress?: Bilingual;
   mapUrl?: string;
+  /** Per-side overrides for ceremonies held at different venues for each side; falls back to venueName/venueAddress/mapUrl when absent. */
+  venueNameBride?: Bilingual;
+  venueNameGroom?: Bilingual;
+  venueAddressBride?: Bilingual;
+  venueAddressGroom?: Bilingual;
+  mapUrlBride?: string;
+  mapUrlGroom?: string;
   dressCode?: Bilingual;
   notes?: Bilingual;
   imageUrl?: string;
@@ -69,6 +77,21 @@ export interface GalleryItem {
   caption?: Bilingual;
 }
 
+/**
+ * Guest-facing ceremonial copy from the optional "Copy" sheet tab. Every key is optional —
+ * a missing tab/row falls back to DEFAULT_SITE_COPY (src/lib/content/copyDefaults.ts).
+ */
+export interface SiteCopy {
+  invocationGaneshaHeader?: Bilingual;
+  invocationGaneshaBody?: Bilingual;
+  invocationShivParvatiHeader?: Bilingual;
+  invocationShivParvatiBody?: Bilingual;
+  heroEyebrow?: Bilingual;
+  weddingCardEyebrow?: Bilingual;
+  galleryHeading?: Bilingual;
+  galleryBadge?: Bilingual;
+}
+
 export interface InvitationContent {
   family: FamilyConfig;
   events: WeddingEvent[];
@@ -82,4 +105,6 @@ export interface InvitationContent {
    * placeholder until family publishes photos.
    */
   gallery?: GalleryItem[];
+  /** Optional. Absent means every ceremonial copy string falls back to DEFAULT_SITE_COPY. */
+  siteCopy?: SiteCopy;
 }

@@ -18,11 +18,13 @@ export function KashiScrollHero({
   primaryName,
   secondaryName,
   blessing,
+  eyebrow,
 }: {
   lang: Lang;
   primaryName: string;
   secondaryName: string;
   blessing: string | null;
+  eyebrow: string;
 }) {
   const isHi = lang === "hi";
 
@@ -222,7 +224,7 @@ export function KashiScrollHero({
               {/* Wedding Invitation Eyebrow */}
               <p className="mt-3 flex items-center justify-center gap-2.5 text-xs font-medium uppercase tracking-[0.3em] text-gold-bright sm:text-sm">
                 <span className="h-px w-6 sm:w-8 bg-gold-bright/60" aria-hidden="true" />
-                <span>{isHi ? "॥ शुभ विवाह निमंत्रण ॥" : "Wedding Invitation"}</span>
+                <span>{eyebrow}</span>
                 <span className="h-px w-6 sm:w-8 bg-gold-bright/60" aria-hidden="true" />
               </p>
 

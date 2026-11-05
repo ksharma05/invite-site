@@ -156,11 +156,13 @@ export function StopMotionHero({
   blessing,
   primaryName,
   secondaryName,
+  eyebrow,
 }: {
   lang: Lang;
   blessing: string | null;
   primaryName: string;
   secondaryName: string;
+  eyebrow: string;
 }) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [armed, setArmed] = useState(false);
@@ -301,8 +303,6 @@ export function StopMotionHero({
     },
     { scope: containerRef, dependencies: [armed] }
   );
-
-  const eyebrow = lang === "hi" ? "विवाह निमंत्रण" : "Wedding Invitation";
 
   return (
     <div

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
-import type { Lang, WeddingEvent } from "@/lib/content/types";
+import type { Lang, Side, WeddingEvent } from "@/lib/content/types";
 import { t } from "@/lib/i18n/dictionary";
 import { EventMotif } from "@/components/ornaments/EventMotif";
 import { DownloadIcsButton } from "@/components/DownloadIcsButton";
@@ -43,9 +43,27 @@ function formatDateTime(iso: string, lang: Lang): string {
   }).format(new Date(iso));
 }
 
+/**
+ * Resolves the venue to show for the side currently viewing the invitation. Ceremonies held
+ * at different locations for each side (e.g. Haldi/Mehendi/Sangeet) carry bride/groom venue
+ * overrides; events with one shared venue (e.g. the wedding ceremony) simply omit them.
+ */
+function resolveVenue(event: WeddingEvent, side: Side, lang: Lang) {
+  const name = side === "bride" ? event.venueNameBride : event.venueNameGroom;
+  const address = side === "bride" ? event.venueAddressBride : event.venueAddressGroom;
+  const mapUrl = side === "bride" ? event.mapUrlBride : event.mapUrlGroom;
+  return {
+    venueName: (name ?? event.venueName)?.[lang] ?? "",
+    venueAddress: (address ?? event.venueAddress)?.[lang] ?? "",
+    mapUrl: mapUrl ?? event.mapUrl,
+  };
+}
+
 export interface ItineraryTimelineProps {
   events: WeddingEvent[];
   lang: Lang;
+  side: Side;
+  weddingCardEyebrow: string;
 }
 
 /**
@@ -56,7 +74,12 @@ export interface ItineraryTimelineProps {
  * the medallion dynamically transforms (cross-fades with a golden specular glint) to reflect
  * the active ceremony in focus.
  */
-export function ItineraryTimeline({ events, lang }: ItineraryTimelineProps) {
+export function ItineraryTimeline({
+  events,
+  lang,
+  side,
+  weddingCardEyebrow,
+}: ItineraryTimelineProps) {
   const [activeEventId, setActiveEventId] = useState<string>(events[0]?.id ?? "");
   const [isTransitioning, setIsTransitioning] = useState<boolean>(false);
   const activeIdRef = useRef<string>(events[0]?.id ?? "");
@@ -191,12 +214,13 @@ export function ItineraryTimeline({ events, lang }: ItineraryTimelineProps) {
           const isMehendi = event.id === "mehendi";
           const isSangeet = event.id === "sangeet";
           const isWedding = event.id === "wedding-ceremony";
-          const isDarkThemed = isMehendi || isSangeet || isWedding;
+          const isDarkThemed = isHaldi || isMehendi || isSangeet || isWedding;
+          const venue = resolveVenue(event, side, lang);
 
           const calEntry: CalendarEntry = {
             title: event.title[lang],
-            details: event.venueName[lang],
-            location: event.venueAddress[lang],
+            details: venue.venueName,
+            location: venue.venueAddress,
             startAt: event.startAt,
             endAt: event.endAt,
           };
@@ -242,17 +266,17 @@ export function ItineraryTimeline({ events, lang }: ItineraryTimelineProps) {
                       style={{ backgroundImage: `url('/ornaments/haldi-card-bg.webp')` }}
                       aria-hidden="true"
                     />
-                    {/* Subtle Warm Contrast Vignette */}
+                    {/* Warm contrast vignette, deep enough for the shared gold-on-dark content */}
                     <div
-                      className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/20 pointer-events-none"
+                      className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/30 to-black/50 pointer-events-none"
                       aria-hidden="true"
                     />
-                    {/* Physical Inset Dual Hairline Border */}
+                    {/* Physical Inset Dual Hairline Gold Border */}
                     <div
-                      className="pointer-events-none absolute inset-2.5 rounded-xl border border-amber-600/30 sm:inset-3.5"
+                      className="pointer-events-none absolute inset-1.5 rounded-xl border border-gold-bright/30 sm:inset-2.5"
                       aria-hidden="true"
                     >
-                      <div className="absolute inset-1 rounded-lg border border-amber-600/20" />
+                      <div className="absolute inset-0.5 rounded-lg border border-gold-bright/15" />
                     </div>
                   </>
                 )}
@@ -366,7 +390,7 @@ export function ItineraryTimeline({ events, lang }: ItineraryTimelineProps) {
                 >
                   <div
                     className={`flex flex-col ${
-                      isHaldi || isDarkThemed ? "items-center text-center" : "items-start"
+                      isDarkThemed ? "items-center text-center" : "items-start"
                     }`}
                   >
                     {isWedding && (
@@ -374,21 +398,19 @@ export function ItineraryTimeline({ events, lang }: ItineraryTimelineProps) {
                         className="mb-1 text-xs font-bold tracking-[0.22em] text-transparent gold-text-sheen drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]"
                         lang={lang}
                       >
-                        {lang === "hi" ? "॥ शुभ विवाह ॥" : "॥ Shubh Vivah ॥"}
+                        {weddingCardEyebrow}
                       </p>
                     )}
 
                     <h3
                       className={`font-heading text-2xl font-semibold transition-colors duration-200 sm:text-3xl md:text-4xl ${
-                        isHaldi
-                          ? "text-[#340f04] drop-shadow-[0_1px_3px_rgba(255,255,255,0.95)] tracking-wide font-bold"
-                          : isWedding
-                            ? "text-transparent bg-clip-text bg-gradient-to-r from-amber-100 via-amber-200 via-gold-bright to-amber-100 drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)] tracking-wider font-extrabold"
-                            : isDarkThemed
-                              ? "text-transparent bg-clip-text bg-gradient-to-r from-amber-100 via-gold-bright to-amber-200 drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)] tracking-wider font-bold"
-                              : isActive
-                                ? "text-primary-dark"
-                                : "text-ink group-hover:text-primary-dark"
+                        isWedding
+                          ? "text-transparent bg-clip-text bg-gradient-to-r from-amber-100 via-amber-200 via-gold-bright to-amber-100 drop-shadow-[0_2px_10px_rgba(0,0,0,0.95)] tracking-wider font-extrabold"
+                          : isDarkThemed
+                            ? "text-transparent bg-clip-text bg-gradient-to-r from-amber-100 via-gold-bright to-amber-200 drop-shadow-[0_2px_8px_rgba(0,0,0,0.95)] tracking-wider font-bold"
+                            : isActive
+                              ? "text-primary-dark"
+                              : "text-ink group-hover:text-primary-dark"
                       }`}
                       lang={lang}
                     >
@@ -398,11 +420,9 @@ export function ItineraryTimeline({ events, lang }: ItineraryTimelineProps) {
                     {event.subtitle && (
                       <p
                         className={`mt-1 text-sm font-semibold tracking-wide ${
-                          isHaldi
-                            ? "text-[#78350f] drop-shadow-[0_1px_1px_rgba(255,255,255,0.7)]"
-                            : isDarkThemed
-                              ? "text-amber-200/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
-                              : "text-gold-deep"
+                          isDarkThemed
+                            ? "text-amber-200/90 drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
+                            : "text-gold-deep"
                         }`}
                         lang={lang}
                       >
@@ -414,20 +434,14 @@ export function ItineraryTimeline({ events, lang }: ItineraryTimelineProps) {
                   {/* Date & Time with SVG Calendar Icon */}
                   <div
                     className={`mt-4 flex items-center justify-center gap-2.5 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold ${
-                      isHaldi
-                        ? "border border-amber-600/40 bg-white/90 backdrop-blur-sm text-[#3b1206] shadow-sm max-w-sm w-full mx-auto"
-                        : isDarkThemed
-                          ? "border border-gold-bright/40 bg-black/45 backdrop-blur-md text-amber-50 shadow-sm max-w-[275px] sm:max-w-sm w-full mx-auto"
-                          : "border border-gold-line/40 bg-surface-alt/30 text-primary-dark"
+                      isDarkThemed
+                        ? "border border-gold-bright/40 bg-black/45 backdrop-blur-md text-amber-50 shadow-sm max-w-[275px] sm:max-w-sm w-full mx-auto"
+                        : "border border-gold-line/40 bg-surface-alt/30 text-primary-dark"
                     }`}
                   >
                     <svg
                       className={`h-4 w-4 shrink-0 ${
-                        isHaldi
-                          ? "text-[#b45309]"
-                          : isDarkThemed
-                            ? "text-gold-bright"
-                            : "text-gold-deep"
+                        isDarkThemed ? "text-gold-bright" : "text-gold-deep"
                       }`}
                       viewBox="0 0 24 24"
                       fill="none"
@@ -448,25 +462,15 @@ export function ItineraryTimeline({ events, lang }: ItineraryTimelineProps) {
                   {/* Venue with SVG Pin Icon */}
                   <div
                     className={`mt-3.5 space-y-1 text-sm ${
-                      isHaldi
-                        ? "max-w-sm w-full mx-auto text-center"
-                        : isDarkThemed
-                          ? "max-w-[265px] sm:max-w-sm w-full mx-auto text-center"
-                          : ""
+                      isDarkThemed ? "max-w-[265px] sm:max-w-sm w-full mx-auto text-center" : ""
                     }`}
                   >
                     <div
-                      className={`flex items-start gap-2.5 ${
-                        isHaldi || isDarkThemed ? "justify-center" : ""
-                      }`}
+                      className={`flex items-start gap-2.5 ${isDarkThemed ? "justify-center" : ""}`}
                     >
                       <svg
                         className={`mt-0.5 h-4 w-4 shrink-0 ${
-                          isHaldi
-                            ? "text-[#b45309]"
-                            : isDarkThemed
-                              ? "text-gold-bright"
-                              : "text-gold-deep"
+                          isDarkThemed ? "text-gold-bright" : "text-gold-deep"
                         }`}
                         viewBox="0 0 24 24"
                         fill="none"
@@ -481,28 +485,24 @@ export function ItineraryTimeline({ events, lang }: ItineraryTimelineProps) {
                       </svg>
                       <p
                         className={`font-semibold ${
-                          isHaldi
-                            ? "text-[#240c03] drop-shadow-[0_1px_1px_rgba(255,255,255,0.7)] text-sm sm:text-base"
-                            : isDarkThemed
-                              ? "text-amber-50 drop-shadow-[0_1px_3px_rgba(0,0,0,0.95)] text-sm sm:text-base"
-                              : "text-ink"
+                          isDarkThemed
+                            ? "text-amber-50 drop-shadow-[0_1px_3px_rgba(0,0,0,0.95)] text-sm sm:text-base"
+                            : "text-ink"
                         }`}
                         lang={lang}
                       >
-                        {event.venueName[lang]}
+                        {venue.venueName}
                       </p>
                     </div>
                     <p
                       className={`text-xs sm:text-sm ${
-                        isHaldi
-                          ? "text-[#4a1c06] font-medium drop-shadow-[0_1px_1px_rgba(255,255,255,0.6)]"
-                          : isDarkThemed
-                            ? "text-amber-100/90 font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
-                            : "pl-6 text-ink-muted"
+                        isDarkThemed
+                          ? "text-amber-100/90 font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
+                          : "pl-6 text-ink-muted"
                       }`}
                       lang={lang}
                     >
-                      {event.venueAddress[lang]}
+                      {venue.venueAddress}
                     </p>
                   </div>
 
@@ -510,31 +510,23 @@ export function ItineraryTimeline({ events, lang }: ItineraryTimelineProps) {
                   {event.dressCode && (
                     <div
                       className={`mt-4 flex items-center justify-center gap-2 border-t pt-3 text-xs uppercase tracking-wider ${
-                        isHaldi
-                          ? "border-amber-600/30 text-[#57270d]"
-                          : isDarkThemed
-                            ? "border-gold-bright/30 text-amber-100"
-                            : "border-border/50 text-ink-muted"
+                        isDarkThemed
+                          ? "border-gold-bright/30 text-amber-100"
+                          : "border-border/50 text-ink-muted"
                       }`}
                     >
                       <span
                         className={`font-semibold ${
-                          isHaldi
-                            ? "text-[#92400e]"
-                            : isDarkThemed
-                              ? "text-gold-bright"
-                              : "text-gold-deep"
+                          isDarkThemed ? "text-gold-bright" : "text-gold-deep"
                         }`}
                       >
                         {t(lang, "dressCode")}:
                       </span>
                       <span
                         className={`rounded-full border px-3 py-0.5 font-semibold shadow-sm ${
-                          isHaldi
-                            ? "border-amber-600/40 bg-amber-100/90 text-[#451a03]"
-                            : isDarkThemed
-                              ? "border-gold-bright/40 bg-black/45 text-amber-100"
-                              : "border-gold-line bg-accent/15 text-accent"
+                          isDarkThemed
+                            ? "border-gold-bright/40 bg-black/45 text-amber-100"
+                            : "border-gold-line bg-accent/15 text-accent"
                         }`}
                       >
                         {event.dressCode[lang]}
@@ -546,11 +538,9 @@ export function ItineraryTimeline({ events, lang }: ItineraryTimelineProps) {
                   {event.notes && (
                     <p
                       className={`mt-3 border-l-2 pl-3 text-xs italic ${
-                        isHaldi
-                          ? "border-amber-600/60 text-[#57270d] max-w-sm mx-auto"
-                          : isDarkThemed
-                            ? "border-gold-bright/60 text-amber-200/90 max-w-sm mx-auto"
-                            : "border-gold-line text-ink-muted"
+                        isDarkThemed
+                          ? "border-gold-bright/60 text-amber-200/90 max-w-sm mx-auto"
+                          : "border-gold-line text-ink-muted"
                       }`}
                       lang={lang}
                     >
@@ -568,21 +558,17 @@ export function ItineraryTimeline({ events, lang }: ItineraryTimelineProps) {
                   {/* Action Buttons: View on Map, Add to Calendar, Download .ics */}
                   <div
                     className={`mt-4 flex flex-wrap gap-2.5 pt-3 border-t ${
-                      isHaldi
-                        ? "border-amber-600/30 justify-center"
-                        : isDarkThemed
-                          ? "border-gold-bright/30 justify-center"
-                          : "border-gold-line/30"
+                      isDarkThemed ? "border-gold-bright/30 justify-center" : "border-gold-line/30"
                     }`}
                   >
-                    {event.mapUrl && (
+                    {venue.mapUrl && (
                       <a
-                        href={event.mapUrl}
+                        href={venue.mapUrl}
                         target="_blank"
                         rel="noopener noreferrer"
                         className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold shadow-sm transition-all duration-300 active:scale-[0.98] sm:text-sm ${
                           isHaldi
-                            ? "border-amber-600/40 bg-white/90 text-[#3b1206] hover:bg-white hover:border-amber-600 shadow-[0_2px_8px_rgba(180,83,9,0.15)]"
+                            ? "border-gold-bright/50 bg-black/55 backdrop-blur-sm text-amber-100 hover:bg-amber-950/80 hover:border-gold-bright hover:text-white shadow-[0_2px_12px_rgba(0,0,0,0.4)]"
                             : isMehendi
                               ? "border-gold-bright/50 bg-black/55 backdrop-blur-sm text-amber-100 hover:bg-emerald-950/80 hover:border-gold-bright hover:text-white shadow-[0_2px_12px_rgba(0,0,0,0.4)]"
                               : isSangeet
@@ -594,11 +580,7 @@ export function ItineraryTimeline({ events, lang }: ItineraryTimelineProps) {
                       >
                         <svg
                           className={`h-4 w-4 ${
-                            isHaldi
-                              ? "text-[#b45309]"
-                              : isDarkThemed
-                                ? "text-gold-bright"
-                                : "text-gold-deep"
+                            isDarkThemed ? "text-gold-bright" : "text-gold-deep"
                           }`}
                           viewBox="0 0 24 24"
                           fill="none"
@@ -621,7 +603,7 @@ export function ItineraryTimeline({ events, lang }: ItineraryTimelineProps) {
                       rel="noopener noreferrer"
                       className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs font-semibold shadow-sm transition-all duration-300 active:scale-[0.98] sm:text-sm ${
                         isHaldi
-                          ? "border-amber-600/40 bg-white/90 text-[#3b1206] hover:bg-white hover:border-amber-600 shadow-[0_2px_8px_rgba(180,83,9,0.15)]"
+                          ? "border-gold-bright/50 bg-black/55 backdrop-blur-sm text-amber-100 hover:bg-amber-950/80 hover:border-gold-bright hover:text-white shadow-[0_2px_12px_rgba(0,0,0,0.4)]"
                           : isMehendi
                             ? "border-gold-bright/50 bg-black/55 backdrop-blur-sm text-amber-100 hover:bg-emerald-950/80 hover:border-gold-bright hover:text-white shadow-[0_2px_12px_rgba(0,0,0,0.4)]"
                             : isSangeet
@@ -634,11 +616,7 @@ export function ItineraryTimeline({ events, lang }: ItineraryTimelineProps) {
                     >
                       <svg
                         className={`h-4 w-4 ${
-                          isHaldi
-                            ? "text-[#b45309]"
-                            : isDarkThemed
-                              ? "text-gold-bright"
-                              : "text-gold-deep"
+                          isDarkThemed ? "text-gold-bright" : "text-gold-deep"
                         }`}
                         viewBox="0 0 24 24"
                         fill="none"
@@ -662,13 +640,13 @@ export function ItineraryTimeline({ events, lang }: ItineraryTimelineProps) {
                       startAt={event.startAt}
                       endAt={event.endAt}
                       title={event.title[lang]}
-                      description={event.venueName[lang]}
-                      location={event.venueAddress[lang]}
+                      description={venue.venueName}
+                      location={venue.venueAddress}
                       labelKey="downloadIcs"
                       lang={lang}
                       className={
                         isHaldi
-                          ? "inline-flex items-center gap-2 rounded-full border border-amber-600/40 bg-white/90 text-[#3b1206] hover:bg-white hover:border-amber-600 shadow-[0_2px_8px_rgba(180,83,9,0.15)] px-4 py-2 text-xs font-semibold shadow-sm transition-all duration-300 active:scale-[0.98] sm:text-sm"
+                          ? "inline-flex items-center gap-2 rounded-full border border-gold-bright/50 bg-black/55 backdrop-blur-sm text-amber-100 hover:bg-amber-950/80 hover:border-gold-bright hover:text-white shadow-[0_2px_12px_rgba(0,0,0,0.4)] px-4 py-2 text-xs font-semibold shadow-sm transition-all duration-300 active:scale-[0.98] sm:text-sm"
                           : isMehendi
                             ? "inline-flex items-center gap-2 rounded-full border border-gold-bright/50 bg-black/55 backdrop-blur-sm text-amber-100 hover:bg-emerald-950/80 hover:border-gold-bright hover:text-white shadow-[0_2px_12px_rgba(0,0,0,0.4)] px-4 py-2 text-xs font-semibold shadow-sm transition-all duration-300 active:scale-[0.98] sm:text-sm"
                             : isSangeet
@@ -678,11 +656,9 @@ export function ItineraryTimeline({ events, lang }: ItineraryTimelineProps) {
                                 : undefined
                       }
                       iconClassName={
-                        isHaldi
-                          ? "h-4 w-4 text-[#b45309] transition-transform duration-300 group-hover:scale-110"
-                          : isDarkThemed
-                            ? "h-4 w-4 text-gold-bright transition-transform duration-300 group-hover:scale-110"
-                            : undefined
+                        isDarkThemed
+                          ? "h-4 w-4 text-gold-bright transition-transform duration-300 group-hover:scale-110"
+                          : undefined
                       }
                     />
                   </div>

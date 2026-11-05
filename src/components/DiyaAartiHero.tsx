@@ -26,11 +26,13 @@ export function DiyaAartiHero({
   primaryName,
   secondaryName,
   blessing,
+  eyebrow,
 }: {
   lang: Lang;
   primaryName: string;
   secondaryName: string;
   blessing: string | null;
+  eyebrow: string;
 }) {
   const isHi = lang === "hi";
 
@@ -221,7 +223,10 @@ export function DiyaAartiHero({
       >
         {/* Instant first paint until the canvas has drawn its first frame */}
         <picture>
-          <source media="(max-aspect-ratio: 4/5)" srcSet="/videos/ganeshji-hero-mobile-poster.jpg" />
+          <source
+            media="(max-aspect-ratio: 4/5)"
+            srcSet="/videos/ganeshji-hero-mobile-poster.jpg"
+          />
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="/videos/ganeshji-hero-poster.jpg"
@@ -269,7 +274,7 @@ export function DiyaAartiHero({
             {/* Wedding Invitation Eyebrow */}
             <p className="mt-2 flex items-center justify-center gap-2.5 text-xs font-medium uppercase tracking-[0.3em] text-gold-deep sm:text-sm">
               <span className="h-px w-6 sm:w-8 bg-[#c9a227]/60" aria-hidden="true" />
-              <span>{isHi ? "॥ शुभ विवाह निमंत्रण ॥" : "Wedding Invitation"}</span>
+              <span>{eyebrow}</span>
               <span className="h-px w-6 sm:w-8 bg-[#c9a227]/60" aria-hidden="true" />
             </p>
 
@@ -281,9 +286,7 @@ export function DiyaAartiHero({
             {/* Sacred Lotus Fleuron Divider */}
             <div className="my-1.5 flex items-center justify-center gap-3" aria-hidden="true">
               <span className="h-px w-8 sm:w-10 bg-[#c9a227]/60" />
-              <span className="font-heading text-xl sm:text-2xl text-gold">
-                {"❦"}
-              </span>
+              <span className="font-heading text-xl sm:text-2xl text-gold">{"❦"}</span>
               <span className="h-px w-8 sm:w-10 bg-[#c9a227]/60" />
             </div>
 

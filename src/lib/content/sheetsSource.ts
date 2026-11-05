@@ -1,6 +1,12 @@
 import "server-only";
 import { unstable_cache } from "next/cache";
-import type { FaqItem, GalleryItem, InvitationContent, WeddingEvent } from "@/lib/content/types";
+import type {
+  FaqItem,
+  GalleryItem,
+  InvitationContent,
+  SiteCopy,
+  WeddingEvent,
+} from "@/lib/content/types";
 import type { SheetRow } from "@/lib/content/normalize";
 import {
   familyConfigSchema,
@@ -8,16 +14,29 @@ import {
   parseEventRow,
   parseFaqRow,
   parseGalleryRow,
+  parseSiteCopy,
 } from "@/lib/content/schema";
 import { fetchSheetTab } from "@/lib/content/sheetsClient";
-import { mapEventRow, mapFaqRow, mapFamily, mapGalleryRow } from "@/lib/content/sheetsMapping";
+import {
+  mapEventRow,
+  mapFaqRow,
+  mapFamily,
+  mapGalleryRow,
+  mapSiteCopy,
+} from "@/lib/content/sheetsMapping";
 import { getServerEnv } from "@/lib/env/server";
 
 export type SheetsContentResult =
   | { kind: "ok"; content: InvitationContent }
   | { kind: "error"; reason: "invalid-family" | "fetch-failed" };
 
-const TABS = { events: "Events", faqs: "Faqs", family: "Family", wording: "Wording" } as const;
+const TABS = {
+  events: "Events",
+  faqs: "Faqs",
+  family: "Family",
+  wording: "Wording",
+  copy: "Copy",
+} as const;
 
 /**
  * Logs only what is needed to find a bad row (tab, row id/index, field errors).
@@ -109,6 +128,27 @@ async function loadFromSheets(): Promise<SheetsContentResult> {
     }
   });
 
+  let copyRows: SheetRow[] = [];
+  try {
+    copyRows = await fetchSheetTab(TABS.copy);
+  } catch {
+    // Copy tab is optional; ignore if not present in the sheet
+  }
+
+  let siteCopy: SiteCopy | undefined;
+  const copyResult = parseSiteCopy(mapSiteCopy(copyRows));
+  if (copyResult.success) {
+    if (Object.keys(copyResult.data).length > 0) {
+      siteCopy = copyResult.data;
+    }
+  } else {
+    logRejectedRow(
+      TABS.copy,
+      0,
+      copyResult.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`)
+    );
+  }
+
   return {
     kind: "ok",
     content: {
@@ -116,6 +156,7 @@ async function loadFromSheets(): Promise<SheetsContentResult> {
       events: events.sort((a, b) => a.order - b.order),
       faqs: faqs.length > 0 ? faqs.sort((a, b) => a.order - b.order) : undefined,
       gallery: gallery.length > 0 ? gallery.sort((a, b) => a.order - b.order) : undefined,
+      siteCopy,
     },
   };
 }

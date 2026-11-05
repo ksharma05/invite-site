@@ -48,9 +48,17 @@ export const weddingEventSchema = z
         message: "endAt must be a valid ISO 8601 timestamp",
       })
       .optional(),
-    venueName: bilingualSchema,
-    venueAddress: bilingualSchema,
+    /** Shared venue; optional when every side that sees the event has its own override below. */
+    venueName: bilingualSchema.optional(),
+    venueAddress: bilingualSchema.optional(),
     mapUrl: z.string().url().optional(),
+    /** Per-side overrides for ceremonies (Haldi/Mehendi/Sangeet) held at different venues for each side; falls back to venueName/venueAddress/mapUrl when absent. */
+    venueNameBride: bilingualSchema.optional(),
+    venueNameGroom: bilingualSchema.optional(),
+    venueAddressBride: bilingualSchema.optional(),
+    venueAddressGroom: bilingualSchema.optional(),
+    mapUrlBride: z.string().url().optional(),
+    mapUrlGroom: z.string().url().optional(),
     dressCode: bilingualSchema.optional(),
     notes: bilingualSchema.optional(),
     imageUrl: z.string().url().optional(),
@@ -58,6 +66,28 @@ export const weddingEventSchema = z
   .refine((event) => !event.endAt || Date.parse(event.endAt) >= Date.parse(event.startAt), {
     message: "endAt must not be before startAt",
     path: ["endAt"],
+  })
+  .superRefine((event, ctx) => {
+    const sides =
+      event.visibleTo === "both" ? (["bride", "groom"] as const) : ([event.visibleTo] as const);
+    for (const side of sides) {
+      const name = side === "bride" ? event.venueNameBride : event.venueNameGroom;
+      const address = side === "bride" ? event.venueAddressBride : event.venueAddressGroom;
+      if (!name && !event.venueName) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `needs venueName or venueName${side === "bride" ? "Bride" : "Groom"}`,
+          path: ["venueName"],
+        });
+      }
+      if (!address && !event.venueAddress) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: `needs venueAddress or venueAddress${side === "bride" ? "Bride" : "Groom"}`,
+          path: ["venueAddress"],
+        });
+      }
+    }
   });
 
 export const faqItemSchema = z.object({
@@ -76,6 +106,24 @@ export const galleryItemSchema = z.object({
   caption: bilingualSchema.optional(),
 });
 
+/**
+ * Guest-facing ceremonial copy (invocation shlokas, hero eyebrow, gallery heading, etc.)
+ * sourced from the optional "Copy" sheet tab. Every key is optional: a missing tab or row
+ * falls back to DEFAULT_SITE_COPY (src/lib/content/copyDefaults.ts) so content never breaks.
+ */
+export const siteCopySchema = z
+  .object({
+    invocationGaneshaHeader: bilingualSchema.optional(),
+    invocationGaneshaBody: bilingualSchema.optional(),
+    invocationShivParvatiHeader: bilingualSchema.optional(),
+    invocationShivParvatiBody: bilingualSchema.optional(),
+    heroEyebrow: bilingualSchema.optional(),
+    weddingCardEyebrow: bilingualSchema.optional(),
+    galleryHeading: bilingualSchema.optional(),
+    galleryBadge: bilingualSchema.optional(),
+  })
+  .partial();
+
 export const invitationContentSchema = z.object({
   family: familyConfigSchema,
   events: z.array(weddingEventSchema),
@@ -83,6 +131,8 @@ export const invitationContentSchema = z.object({
   faqs: z.array(faqItemSchema).optional(),
   /** Absent/empty means the photo gallery displays the celebratory placeholder. */
   gallery: z.array(galleryItemSchema).optional(),
+  /** Absent means every ceremonial copy string falls back to DEFAULT_SITE_COPY. */
+  siteCopy: siteCopySchema.optional(),
 });
 
 /** Validates one event row; used so a single malformed row can be skipped without failing the batch. */
@@ -98,6 +148,11 @@ export function parseFaqRow(row: unknown) {
 /** Validates one Gallery row; same row-skip philosophy as parseEventRow. */
 export function parseGalleryRow(row: unknown) {
   return galleryItemSchema.safeParse(row);
+}
+
+/** Validates the assembled siteCopy candidate built from the "Copy" tab. */
+export function parseSiteCopy(candidate: unknown) {
+  return siteCopySchema.safeParse(candidate);
 }
 
 /** Detects duplicate stable ids among otherwise-valid events (Phase 5 acceptance criterion). */

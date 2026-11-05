@@ -10,6 +10,12 @@
  *   subtitle_en, subtitle_hi, startAt, endAt, venueName_en, venueName_hi,
  *   venueAddress_en, venueAddress_hi, mapUrl, dressCode_en, dressCode_hi,
  *   notes_en, notes_hi, imageUrl
+ *   Optional per-side venue overrides (for ceremonies held at different
+ *   venues for bride's side vs groom's side, e.g. Haldi/Mehendi/Sangeet):
+ *   venueNameBride_en, venueNameBride_hi, venueNameGroom_en, venueNameGroom_hi,
+ *   venueAddressBride_en, venueAddressBride_hi, venueAddressGroom_en,
+ *   venueAddressGroom_hi, mapUrlBride, mapUrlGroom. Leave these blank to use
+ *   the shared venueName/venueAddress/mapUrl for both sides.
  *
  * Tab "Faqs":    id, order, active, question_en, question_hi, answer_en, answer_hi
  *
@@ -20,6 +26,14 @@
  *
  * Tab "Wording": side, text_en, text_hi
  *   side is one of: bride, groom, blessing (blessing row is optional)
+ *
+ * Tab "Copy" (optional): key, text_en, text_hi
+ *   One row per ceremonial-copy string (invocation shlokas, hero eyebrow,
+ *   wedding-card eyebrow, gallery heading/badge). Any missing key/row falls
+ *   back to DEFAULT_SITE_COPY (src/lib/content/copyDefaults.ts). Known keys:
+ *   invocationGaneshaHeader, invocationGaneshaBody, invocationShivParvatiHeader,
+ *   invocationShivParvatiBody, heroEyebrow, weddingCardEyebrow, galleryHeading,
+ *   galleryBadge.
  */
 
 import {
@@ -44,12 +58,39 @@ export function mapEventRow(row: SheetRow): unknown {
         : undefined,
     startAt: normalizeCell(row.startAt),
     endAt: emptyToUndefined(row.endAt),
-    venueName: { en: normalizeCell(row.venueName_en), hi: normalizeCell(row.venueName_hi) },
-    venueAddress: {
-      en: normalizeCell(row.venueAddress_en),
-      hi: normalizeCell(row.venueAddress_hi),
-    },
+    venueName:
+      emptyToUndefined(row.venueName_en) || emptyToUndefined(row.venueName_hi)
+        ? { en: normalizeCell(row.venueName_en), hi: normalizeCell(row.venueName_hi) }
+        : undefined,
+    venueAddress:
+      emptyToUndefined(row.venueAddress_en) || emptyToUndefined(row.venueAddress_hi)
+        ? { en: normalizeCell(row.venueAddress_en), hi: normalizeCell(row.venueAddress_hi) }
+        : undefined,
     mapUrl: emptyToUndefined(row.mapUrl),
+    venueNameBride:
+      emptyToUndefined(row.venueNameBride_en) || emptyToUndefined(row.venueNameBride_hi)
+        ? { en: normalizeCell(row.venueNameBride_en), hi: normalizeCell(row.venueNameBride_hi) }
+        : undefined,
+    venueNameGroom:
+      emptyToUndefined(row.venueNameGroom_en) || emptyToUndefined(row.venueNameGroom_hi)
+        ? { en: normalizeCell(row.venueNameGroom_en), hi: normalizeCell(row.venueNameGroom_hi) }
+        : undefined,
+    venueAddressBride:
+      emptyToUndefined(row.venueAddressBride_en) || emptyToUndefined(row.venueAddressBride_hi)
+        ? {
+            en: normalizeCell(row.venueAddressBride_en),
+            hi: normalizeCell(row.venueAddressBride_hi),
+          }
+        : undefined,
+    venueAddressGroom:
+      emptyToUndefined(row.venueAddressGroom_en) || emptyToUndefined(row.venueAddressGroom_hi)
+        ? {
+            en: normalizeCell(row.venueAddressGroom_en),
+            hi: normalizeCell(row.venueAddressGroom_hi),
+          }
+        : undefined,
+    mapUrlBride: emptyToUndefined(row.mapUrlBride),
+    mapUrlGroom: emptyToUndefined(row.mapUrlGroom),
     dressCode:
       emptyToUndefined(row.dressCode_en) || emptyToUndefined(row.dressCode_hi)
         ? { en: normalizeCell(row.dressCode_en), hi: normalizeCell(row.dressCode_hi) }
@@ -140,4 +181,27 @@ export function mapFamily(peopleRows: SheetRow[], wordingRows: SheetRow[]): unkn
       ? { en: normalizeCell(blessingRow.text_en), hi: normalizeCell(blessingRow.text_hi) }
       : undefined,
   };
+}
+
+const SITE_COPY_KEYS = [
+  "invocationGaneshaHeader",
+  "invocationGaneshaBody",
+  "invocationShivParvatiHeader",
+  "invocationShivParvatiBody",
+  "heroEyebrow",
+  "weddingCardEyebrow",
+  "galleryHeading",
+  "galleryBadge",
+] as const;
+
+/** Builds the unvalidated SiteCopy candidate from the optional "Copy" tab; unknown keys are ignored. */
+export function mapSiteCopy(rows: SheetRow[]): unknown {
+  const result: Record<string, unknown> = {};
+  for (const key of SITE_COPY_KEYS) {
+    const row = rows.find((r) => normalizeCell(r.key) === key);
+    if (!row) continue;
+    if (!emptyToUndefined(row.text_en) && !emptyToUndefined(row.text_hi)) continue;
+    result[key] = { en: normalizeCell(row.text_en), hi: normalizeCell(row.text_hi) };
+  }
+  return result;
 }

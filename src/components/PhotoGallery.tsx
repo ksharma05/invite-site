@@ -7,9 +7,11 @@ import { Ornament } from "@/components/ornaments/Ornament";
 export interface PhotoGalleryProps {
   items?: GalleryItem[];
   lang: Lang;
+  heading: string;
+  badge: string;
 }
 
-export function PhotoGallery({ items, lang }: PhotoGalleryProps) {
+export function PhotoGallery({ items, lang, heading, badge }: PhotoGalleryProps) {
   const [selectedIdx, setSelectedIdx] = useState<number | null>(null);
   const [failedImages, setFailedImages] = useState<Set<string>>(new Set());
   const isHi = lang === "hi";
@@ -50,7 +52,7 @@ export function PhotoGallery({ items, lang }: PhotoGalleryProps) {
   if (visibleItems.length === 0) {
     return (
       <section
-        aria-label={isHi ? "पावन स्मृतियाँ" : "Sacred Memories"}
+        aria-label={heading}
         className="card-glass-ornate gold-shimmer-sweep relative overflow-hidden rounded-2xl p-8 text-center sm:p-10"
       >
         <div className="pointer-events-none absolute -top-3 -left-3 h-12 w-12 opacity-35">
@@ -65,9 +67,7 @@ export function PhotoGallery({ items, lang }: PhotoGalleryProps) {
             name="couple-silhouette"
             className="pulse-glint mx-auto h-12 w-28 text-gold drop-shadow-[0_2px_8px_rgba(201,162,39,0.35)]"
           />
-          <h3 className="mt-4 font-heading text-2xl text-primary-dark sm:text-3xl">
-            {isHi ? "पावन स्मृतियाँ" : "Sacred Memories"}
-          </h3>
+          <h3 className="mt-4 font-heading text-2xl text-primary-dark sm:text-3xl">{heading}</h3>
           <p className="mt-2 max-w-md text-sm leading-relaxed text-ink-muted">
             {isHi
               ? "विवाह के पावन क्षण एवं उत्सव की तस्वीरें शीघ्र ही यहाँ प्रकाशित की जाएंगी।"
@@ -81,19 +81,14 @@ export function PhotoGallery({ items, lang }: PhotoGalleryProps) {
   const activePhoto = selectedIdx !== null ? visibleItems[selectedIdx] : null;
 
   return (
-    <section
-      aria-label={isHi ? "पावन स्मृतियाँ" : "Sacred Memories"}
-      className="relative flex flex-col items-center"
-    >
+    <section aria-label={heading} className="relative flex flex-col items-center">
       {/* Section Header */}
       <div className="mb-8 flex items-center justify-center gap-3 text-center">
         <span
           className="h-px w-12 bg-gradient-to-r from-transparent via-gold-line to-gold"
           aria-hidden="true"
         />
-        <h2 className="font-heading text-2xl text-primary-dark sm:text-3xl">
-          {isHi ? "पावन स्मृतियाँ" : "Sacred Memories"}
-        </h2>
+        <h2 className="font-heading text-2xl text-primary-dark sm:text-3xl">{heading}</h2>
         <span
           className="h-px w-12 bg-gradient-to-l from-transparent via-gold-line to-gold"
           aria-hidden="true"
@@ -128,9 +123,7 @@ export function PhotoGallery({ items, lang }: PhotoGalleryProps) {
                 ) : (
                   <div className="flex h-full w-full flex-col items-center justify-center p-4 text-center text-ink-muted">
                     <Ornament name="lotus-emblem" className="h-8 w-12 text-gold/60" />
-                    <span className="mt-2 text-xs font-devanagari">
-                      {isHi ? "पावन क्षण" : "Sacred Moment"}
-                    </span>
+                    <span className="mt-2 text-xs font-devanagari">{badge}</span>
                   </div>
                 )}
 

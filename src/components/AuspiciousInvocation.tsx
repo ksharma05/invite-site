@@ -1,7 +1,21 @@
 import type { Lang } from "@/lib/content/types";
 import { Ornament } from "@/components/ornaments/Ornament";
 
-export function AuspiciousInvocation({ lang }: { lang: Lang }) {
+export interface AuspiciousInvocationProps {
+  lang: Lang;
+  ganeshaHeader: string;
+  ganeshaBody: string;
+  shivParvatiHeader: string;
+  shivParvatiBody: string;
+}
+
+export function AuspiciousInvocation({
+  lang,
+  ganeshaHeader,
+  ganeshaBody,
+  shivParvatiHeader,
+  shivParvatiBody,
+}: AuspiciousInvocationProps) {
   const isHi = lang === "hi";
 
   return (
@@ -52,15 +66,18 @@ export function AuspiciousInvocation({ lang }: { lang: Lang }) {
       {/* --- LORD GANESHA INVOCATION --- */}
       <div className="relative z-10 flex flex-col items-center">
         <h2 className="font-devanagari text-lg font-bold tracking-[0.25em] text-primary-dark sm:text-xl">
-          ॥ श्री गणेशाय नमः ॥
+          {ganeshaHeader}
         </h2>
 
         {/* Sacred Vakratunda Mahakaya Mantra */}
         <div className="mt-3 max-w-md">
           <p className="font-devanagari text-base font-semibold leading-relaxed tracking-wider text-gold-deep sm:text-lg">
-            वक्रतुण्ड महाकाय सूर्यकोटि समप्रभ।
-            <br />
-            निर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा॥
+            {ganeshaBody.split("\n").map((line, idx) => (
+              <span key={idx}>
+                {idx > 0 && <br />}
+                {line}
+              </span>
+            ))}
           </p>
         </div>
       </div>
@@ -75,15 +92,18 @@ export function AuspiciousInvocation({ lang }: { lang: Lang }) {
       {/* --- SHIV-PARVATI BLESSING --- */}
       <div className="relative z-10 flex flex-col items-center">
         <h3 className="font-devanagari text-base font-bold tracking-[0.22em] text-primary-dark sm:text-lg">
-          ॥ श्री गौरी-शंकराय नमः ॥
+          {shivParvatiHeader}
         </h3>
 
         {/* Sacred Karpura Gauram Shloka */}
         <div className="mt-2.5 max-w-md">
           <p className="font-devanagari text-sm font-semibold leading-relaxed tracking-wider text-gold-deep sm:text-base">
-            कर्पूरगौरं करुणावतारं संसारसारम् भुजगेन्द्रहारम्।
-            <br />
-            सदावसन्तं हृदयारविन्दे भवं भवानीसहितं नमामि॥
+            {shivParvatiBody.split("\n").map((line, idx) => (
+              <span key={idx}>
+                {idx > 0 && <br />}
+                {line}
+              </span>
+            ))}
           </p>
         </div>
       </div>

@@ -1,4 +1,5 @@
 import type { InvitationContent } from "@/lib/content/types";
+import { DEFAULT_SITE_COPY } from "@/lib/content/copyDefaults";
 
 /**
  * DEVELOPMENT FIXTURE — NOT PRODUCTION CONTENT.
@@ -50,6 +51,24 @@ export const fixtureContent: InvitationContent = {
         en: "Exact address pending family confirmation.",
         hi: "[मसौदा] सटीक पता पारिवारिक पुष्टि के लिए लंबित है।",
       },
+      // Example of a ceremony held at a different venue for each side; omit these
+      // fields entirely when both sides share one venue (see wedding-ceremony below).
+      venueNameBride: {
+        en: "Bride's residence, Bermo, Jharkhand",
+        hi: "[मसौदा] वधू का निवास, बेरमो, झारखंड",
+      },
+      venueAddressBride: {
+        en: "Exact address pending family confirmation.",
+        hi: "[मसौदा] सटीक पता पारिवारिक पुष्टि के लिए लंबित है।",
+      },
+      venueNameGroom: {
+        en: "Groom's residence, Bermo, Jharkhand",
+        hi: "[मसौदा] वर का निवास, बेरमो, झारखंड",
+      },
+      venueAddressGroom: {
+        en: "Exact address pending family confirmation.",
+        hi: "[मसौदा] सटीक पता पारिवारिक पुष्टि के लिए लंबित है।",
+      },
       notes: {
         en: "Placeholder event — real schedule comes from the spreadsheet (Phase 5).",
         hi: "[मसौदा] यह एक नमूना कार्यक्रम है।",
@@ -87,6 +106,22 @@ export const fixtureContent: InvitationContent = {
         hi: "[मसौदा] स्थान की पुष्टि होनी बाकी है, बेरमो, झारखंड",
       },
       venueAddress: {
+        en: "Exact address pending family confirmation.",
+        hi: "[मसौदा] सटीक पता पारिवारिक पुष्टि के लिए लंबित है।",
+      },
+      venueNameBride: {
+        en: "Bride's side banquet hall, Bermo, Jharkhand",
+        hi: "[मसौदा] वधू पक्ष भोज स्थल, बेरमो, झारखंड",
+      },
+      venueAddressBride: {
+        en: "Exact address pending family confirmation.",
+        hi: "[मसौदा] सटीक पता पारिवारिक पुष्टि के लिए लंबित है।",
+      },
+      venueNameGroom: {
+        en: "Groom's side banquet hall, Bermo, Jharkhand",
+        hi: "[मसौदा] वर पक्ष भोज स्थल, बेरमो, झारखंड",
+      },
+      venueAddressGroom: {
         en: "Exact address pending family confirmation.",
         hi: "[मसौदा] सटीक पता पारिवारिक पुष्टि के लिए लंबित है।",
       },
@@ -160,6 +195,9 @@ export const fixtureContent: InvitationContent = {
       },
     },
   ],
+  // Mirrors today's hardcoded ceremonial copy so fixture/dev mode looks identical to production
+  // when the real "Copy" sheet tab is absent or incomplete.
+  siteCopy: DEFAULT_SITE_COPY,
 };
 
 export const WEDDING_DATE_ISO = "2026-11-25T10:00:00+05:30";
