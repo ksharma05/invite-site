@@ -445,6 +445,26 @@ body {
   animation: pulseGlint 2.8s ease-in-out infinite;
 }
 
+@keyframes gateBreath {
+  0%,
+  100% {
+    opacity: 0.45;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-gate-breath {
+  animation: gateBreath 2.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-gate-breath {
+    animation: none;
+  }
+}
+
 @keyframes musicEqualizer {
   0%,
   100% {
