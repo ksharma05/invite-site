@@ -28,7 +28,12 @@
   --color-gold-line: rgb(201 162 39 / 0.32);
   --color-card-tint: #f7ead9;
   --color-rule: #e6cfae;
-  --glow-flame: radial-gradient(circle, #fff3c4 0%, rgba(212, 175, 55, 0.45) 45%, rgba(212, 175, 55, 0) 100%);
+  --glow-flame: radial-gradient(
+    circle,
+    #fff3c4 0%,
+    rgba(212, 175, 55, 0.45) 45%,
+    rgba(212, 175, 55, 0) 100%
+  );
   --radius-ornate: 1rem;
   --shadow-soft: 0 12px 32px -16px rgb(178 96 47 / 0.35);
   --shadow-ornate: 0 18px 44px -18px rgb(178 96 47 / 0.38), 0 0 0 1px rgb(201 162 39 / 0.22);
